@@ -1,0 +1,6 @@
+use_frameworks!
+
+target 'DataStruct_Example' do
+  pod 'DataStruct', :path => '../'
+  
+end
