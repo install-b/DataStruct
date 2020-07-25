@@ -26,10 +26,14 @@ class ViewController: UIViewController {
         let arr = [63, 41, 41, 22, 31, 74, 60, 61, 26, 19, 53, 44, 15, 41, 63, 68, 75, 71, 80, 92, 90, 91, 97]
         
         for i in 0..<arr.count {
-            let key = arr[i] //Int.random(in: 0..<100)
+            let key = arr[i] //Int.random(in: 0..<100)l
+            let value = NSString(format: "{index:%2d, key: %2d}", i, key)
             set.insert(key)
-            skipList.setValue(NSString(format: "{index:%2d, key: %2d}", i, key), for: key)
+            if let orgin = skipList.setValue(value, for: key) {
+                print("set value: \n\(value) \n did replace origin: \n\(orgin)\n")
+            }
         }
+        
         
         for r in  [63, 41, 41, 22, 31, 74, 60, 100, 300] {
             set.remove(r)

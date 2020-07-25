@@ -77,7 +77,30 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
         count += 1
     }
     
+    #if swift(>=5.1)
     public mutating func append<S>(contentsOf newElements: S) where S : Sequence, Self.Element == S.Element {
+        let nodes = newElements.map { Node(val: $0) }
+        var pre: Node<T>?
+        let v = nodes[0]
+        nodes.forEach {
+            pre?.next = $0
+            $0.prev = pre
+            pre = $0
+        }
+        
+        guard let node = footer else {
+            header = nodes.first
+            footer = nodes.last
+            count = nodes.count
+            return
+        }
+        node.next = nodes.first
+        nodes.first?.prev = node
+        footer = nodes.last
+        count += nodes.count
+    }
+    #else
+    public mutating func append<S>(contentsOf newElements: S) where S : Sequence, DoublyLinkList.Element == S.Element {
         
         let nodes = newElements.map { Node(val: $0) }
         var pre: Node<T>?
@@ -98,6 +121,8 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
         footer = nodes.last
         count += nodes.count
     }
+    #endif
+
     /// O(index)   O(count - index)
     public mutating func insert(_ element: T, at index: Int) {
         if index == 0 {
@@ -410,13 +435,22 @@ extension DoublyLinkList {
 }
 
 extension DoublyLinkList {
-    
+
+    #if swift(>=5.1)
     /// 快速构造
     /// - Parameter elements: 元素集合
     public init<S>(contentsOf elements: S) where S : Sequence, Self.Element == S.Element {
         self.init()
         self.append(contentsOf: elements)
     }
+    #else
+    /// 快速构造
+    /// - Parameter elements: 元素集合
+    public init<S>(contentsOf elements: S) where S : Sequence, DoublyLinkList.Element == S.Element {
+        self.init()
+        self.append(contentsOf: elements)
+    }
+    #endif
 }
 
 

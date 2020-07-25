@@ -63,9 +63,8 @@ public struct SingleLinkList<T: Equatable>: LinkList {
         node.next = Node(val: element)
         count += 1
     }
-    
+    #if swift(>=5.1)
     public mutating func append<S>(contentsOf newElements: S) where S : Sequence, Self.Element == S.Element {
-        
         let nodes = newElements.map { Node(val: $0) }
         var pre: Node<T>?
         nodes.forEach {
@@ -81,6 +80,25 @@ public struct SingleLinkList<T: Equatable>: LinkList {
         node.next = nodes.first
         count += nodes.count
     }
+    #else
+    public mutating func append<S>(contentsOf newElements: S) where S : Sequence, SingleLinkList.Element == S.Element {
+    
+        let nodes = newElements.map { Node(val: $0) }
+        var pre: Node<T>?
+        nodes.forEach {
+            pre?.next = $0
+            pre = $0
+        }
+        
+        guard let node = lastNode else {
+            header = nodes.first
+            count = nodes.count
+            return
+        }
+        node.next = nodes.first
+        count += nodes.count
+    }
+    #endif
     
     public mutating func insert(_ element: T, at index: Int) {
         if index == 0 {
@@ -304,13 +322,22 @@ extension SingleLinkList {
 }
 
 extension SingleLinkList {
-    
+    #if swift(>=5.1)
     /// 快速构造
     /// - Parameter elements: 元素集合
     public init<S>(contentsOf elements: S) where S : Sequence, Self.Element == S.Element {
         self.init()
         self.append(contentsOf: elements)
     }
+    #else
+    /// 快速构造
+    /// - Parameter elements: 元素集合
+    public init<S>(contentsOf elements: S) where S : Sequence, SingleLinkList.Element == S.Element {
+        self.init()
+        self.append(contentsOf: elements)
+    }
+    #endif
+
 }
 
 public extension SingleLinkList {
