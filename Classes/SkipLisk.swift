@@ -116,10 +116,6 @@ public extension SkipLisk {
         return nil
     }
     
-    func containsValue(for key: K) -> Bool {
-        valueFor(key) != nil
-    }
-    
     /// 设置Value Data
     /// - Parameters:
     ///   - val: data value
@@ -212,7 +208,6 @@ public extension SkipLisk {
                 continue
             }
             switch compare(key, node.key) {
-            //case .orderedSame:
             case .orderedDescending:
                 // key > node.key 穿过该节点进入下个节点
                 nexts = node.nexts
