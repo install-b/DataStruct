@@ -160,6 +160,7 @@ extension ViewController {
         avl.insert(10)
         avl.insert(5)
         avl.insert(8)
+        printBST()
         avl.insert(15)
         avl.insert(20)
         printBST()

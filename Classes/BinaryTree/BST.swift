@@ -220,7 +220,7 @@ extension BST {
     /// 
     private mutating func prepareMakeRatio(_ node: BTNode<Element>, child: BTNode<Element>) {
         if let parent = node.parent {
-            if isSameObject(parent.left, child) {
+            if isSameObject(parent.left, node) {
                 parent.left = child
             } else {
                 parent.right = child

@@ -47,7 +47,7 @@ final class AVLNode<E>: BTNode<E> {
     /// 更新高度
     func updateHight() {
         height = max(lChild?.height ?? 0, rChild?.height ?? 0) + 1
-        fater?.updateHight()
+        
     }
     
     override init(val: E, parent: BTNode<E>? = nil, left: BTNode<E>? = nil, right: BTNode<E>? = nil) {
@@ -85,30 +85,54 @@ public struct AVLTree<E>: BST {
     }
     
     public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
-        guard let node = node as? AVLNode<E>, let parent = parent as? AVLNode<E> else { return }
+        guard var node = node as? AVLNode<E>, var parent = parent as? AVLNode<E> else { return }
         node.updateHight()
+        parent.updateHight()
+        var isAddLeft = isLeft
         
-        guard let grand = parent.fater else { return }
-        if -1...1 ~= grand.factor { return }
         
-        if isSameObject(grand.lChild, parent) {
-            if isLeft {
-                /// LL 型
-                /// 进行一个右旋转
-                makeRightRatio(grand, lChild: parent)
+        while true {
+
+            guard let grand = parent.fater else { return }
+
+            if -1...1 ~= grand.factor { return }
+            
+            if isSameObject(grand.lChild, parent) {
+                if isAddLeft {
+                    /// LL 型
+                    /// 进行一个右旋转
+                    makeRightRatio(grand, lChild: parent)
+                    node = parent
+                } else {
+                    // LR 型
+                    // p 进行右旋转 然后 g 进行左旋转
+                    makeLeftRatio(parent, rChild: node)
+                    makeRightRatio(grand, lChild: node)
+                }
+                isAddLeft = true
             } else {
-                // LR 型
-                
+                if isAddLeft {
+                    //LR 型
+                    makeRightRatio(parent, lChild: node)
+                    makeLeftRatio(grand, rChild: node)
+                    
+                } else {
+                    // RR 型
+                    makeLeftRatio(parent, rChild: node)
+                    node = parent
+                }
+                isAddLeft = false
             }
-        } else {
-            if isLeft {
-                //RL 型
-                
-            } else {
-                // RR 型
-                
+            node.updateHight()
+            parent.updateHight()
+            guard let p = node.fater else {
+                return
             }
+            parent = p
+
         }
+        
+
     }
 }
 

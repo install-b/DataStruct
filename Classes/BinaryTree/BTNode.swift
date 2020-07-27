@@ -8,7 +8,7 @@
 import Foundation
 
 /// 二叉树节点 Abstract Class
-public class BTNode<E> {
+public class BTNode<E>: CustomDebugStringConvertible {
     /// 元素值
     var val: E
     /// 父节点
@@ -24,5 +24,9 @@ public class BTNode<E> {
         self.parent = parent
         self.left = left
         self.right = right
+    }
+    
+    public var debugDescription: String {
+        "val=: \(val), \nleft: \(left)\nright:\(right)"
     }
 }
