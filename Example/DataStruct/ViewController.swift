@@ -157,19 +157,21 @@ extension ViewController {
                 print($0)
             }
         }
-        avl.insert(10)
-        avl.insert(5)
-        avl.insert(8)
+//        avl.insert(10)
+//        avl.insert(5)
+//        avl.insert(8)
+//        //printBST()
+//        avl.insert(15)
+//        //printBST()
+//        avl.insert(20)
+//        //printBST()
+//        avl.insert(17)
+        
+        (1...15).forEach {
+            avl.insert($0)
+        }
         printBST()
-        avl.insert(15)
-        avl.insert(20)
-        printBST()
-
-
-        avl.remove(15)
-        printBST()
-        avl.remove(10)
-        printBST()
+        
     }
     
 }

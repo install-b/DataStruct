@@ -47,7 +47,6 @@ final class AVLNode<E>: BTNode<E> {
     /// 更新高度
     func updateHight() {
         height = max(lChild?.height ?? 0, rChild?.height ?? 0) + 1
-        
     }
     
     override init(val: E, parent: BTNode<E>? = nil, left: BTNode<E>? = nil, right: BTNode<E>? = nil) {
@@ -88,16 +87,22 @@ public struct AVLTree<E>: BST {
         guard var node = node as? AVLNode<E>, var parent = parent as? AVLNode<E> else { return }
         node.updateHight()
         parent.updateHight()
-        var isAddLeft = isLeft
-        
+       
         
         while true {
 
             guard let grand = parent.fater else { return }
-
-            if -1...1 ~= grand.factor { return }
+            let isAddLeft = isSameObject(parent.left, node)
+            let factor = grand.factor
+            if -1...1 ~= factor {
+                node = parent
+                parent = grand
+                grand.updateHight()
+                continue
+            }
             
-            if isSameObject(grand.lChild, parent) {
+            if factor > 1 {
+                
                 if isAddLeft {
                     /// LL 型
                     /// 进行一个右旋转
@@ -109,22 +114,22 @@ public struct AVLTree<E>: BST {
                     makeLeftRatio(parent, rChild: node)
                     makeRightRatio(grand, lChild: node)
                 }
-                isAddLeft = true
+                
             } else {
                 if isAddLeft {
                     //LR 型
                     makeRightRatio(parent, lChild: node)
                     makeLeftRatio(grand, rChild: node)
-                    
                 } else {
                     // RR 型
-                    makeLeftRatio(parent, rChild: node)
+                    makeLeftRatio(grand, rChild: parent)
                     node = parent
                 }
-                isAddLeft = false
             }
-            node.updateHight()
+
             parent.updateHight()
+            grand.updateHight()
+            node.updateHight()
             guard let p = node.fater else {
                 return
             }
