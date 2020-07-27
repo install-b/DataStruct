@@ -26,7 +26,7 @@ extension DoublyLinkList {
             self.next = next
         }
         
-        func swpeNextPrev() {
+        func swapNextPrev() {
             let temp = prev
             prev = next
             next = temp
@@ -404,7 +404,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
         var node = header
         while node != nil {
             let temp = node?.next
-            node?.swpeNextPrev()
+            node?.swapNextPrev()
             node = temp
         }
         let temp = header
