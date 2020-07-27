@@ -14,11 +14,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        testLinkList()
+//        testLinkList()
+//
+//        testDoublyLinkList()
+//        
+//        testSkipList()
         
-        testDoublyLinkList()
-        
-        testSkipList()
+        bstTest()
     }
 }
 
@@ -131,4 +133,42 @@ extension ViewController {
         
         assert(set1 == set2)
     }
+}
+
+extension ViewController {
+    func bstTest() {
+        var avl = AVLTree<Int>()
+        func printBST() {
+            /// 中序遍历
+            print("\n中序遍历:")
+            avl.inoderTranersal {
+                print($0)
+            }
+            print("\n前序遍历:")
+            avl.preoderTranersal {
+                print($0)
+            }
+            print("\n后序遍历:")
+            avl.postoderTranersal {
+                print($0)
+            }
+            print("\n层序遍历:")
+            avl.leveloderTranersal {
+                print($0)
+            }
+        }
+        avl.insert(10)
+        avl.insert(5)
+        avl.insert(8)
+        avl.insert(15)
+        avl.insert(20)
+        printBST()
+
+
+        avl.remove(15)
+        printBST()
+        avl.remove(10)
+        printBST()
+    }
+    
 }

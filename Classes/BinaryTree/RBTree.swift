@@ -13,6 +13,33 @@ let red: Color = true
 let black: Color = false
 /// 红黑树 节点
 final class RBNode<E>: BTNode<E> {
+    var lChild: BTNode<E>? {
+        get {
+            left as? RBNode<E>
+        }
+        set {
+            left = newValue
+        }
+    }
+    
+    var rChild: RBNode<E>? {
+        get {
+            right as? RBNode<E>
+        }
+        set {
+            right = newValue
+        }
+    }
+    
+    var fater: RBNode<E>? {
+        get {
+            parent as? RBNode<E>
+        }
+        set {
+            parent = newValue
+        }
+    }
+    
     /// 颜色
     var color: Color = red
     
@@ -48,13 +75,14 @@ public struct RBTree<E>: BST {
     }
     
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
-        return RBNode(val: val, parent: parent)
+        RBNode(val: val, parent: parent)
     }
     
-    public func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
+    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
         
     }
 }
+
 
 /// 元素具备可比性
 extension RBTree where E: Comparable {

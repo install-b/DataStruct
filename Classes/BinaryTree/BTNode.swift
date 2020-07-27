@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 二叉树节点
+/// 二叉树节点 Abstract Class
 public class BTNode<E> {
     /// 元素值
     var val: E

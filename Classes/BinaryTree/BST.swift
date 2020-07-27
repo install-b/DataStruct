@@ -24,20 +24,18 @@ public protocol BST {
     
     /// 比较器
     var cmp: BSTElementCompare<Element> { get }
-    
+
     
     /// 构建节点
     /// - Parameter val: 元素值
     func createNode(with val: Element, parent: BTNode<Element>?) -> BTNode<Element>
     
-    
     /// 插入了新的元素
     /// - Parameters:
     ///   - node: 新元素的节点
     ///   - parent: 插入的新元素父节点
-    func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>, isLeft: Bool)
+    mutating func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>, isLeft: Bool)
 }
-
 
 /// insert remove
 public extension BST {
@@ -45,6 +43,7 @@ public extension BST {
     /// 插入元素
     /// - Parameter element: 插入的新元素
     /// - Returns: 之前存在相同的值,返回之前存在的值
+    @discardableResult
     mutating func insert(_ element: Element) -> Element? {
         guard var node = root else {
             /// 插入根节点
@@ -90,6 +89,7 @@ public extension BST {
     /// 移除元素
     /// - Parameter element: 要移除的元素
     /// - Returns: 若存在该值则返回之前存储的值
+    @discardableResult
     mutating func remove(_ element: Element) -> Element? {
         guard var node = root else {
             return nil
@@ -213,4 +213,53 @@ public extension BST {
             }
         }
     }
+}
+
+
+extension BST {
+    /// 
+    private mutating func prepareMakeRatio(_ node: BTNode<Element>, child: BTNode<Element>) {
+        if let parent = node.parent {
+            if isSameObject(parent.left, child) {
+                parent.left = child
+            } else {
+                parent.right = child
+            }
+            child.parent = parent
+        } else {
+            root = child
+            child.parent = nil
+        }
+        //
+        node.parent = child
+    }
+    
+    
+    /// 右旋转
+    /// - Parameters:
+    ///   - node: 需要旋转的节点
+    ///   - lChild: 旋转节点的左子节点
+    mutating func makeRightRatio(_ node: BTNode<Element>, lChild: BTNode<Element>) {
+ 
+       prepareMakeRatio(node, child: lChild)
+        
+        let orginRight = lChild.right
+        lChild.right = node
+        node.left = orginRight
+    }
+    
+    
+    /// 左旋转
+    /// - Parameters:
+    ///   - node: 需要旋转的节点
+    ///   - rChild: 旋转节点的右子节点
+    mutating func makeLeftRatio(_ node: BTNode<Element>, rChild: BTNode<Element>) {
+    
+        prepareMakeRatio(node, child: rChild)
+       
+        let orginRight = rChild.left
+        rChild.left = node
+        node.right = orginRight
+    }
+
 }
