@@ -8,14 +8,23 @@
 import Foundation
 
 
+/// 二叉树节点
 public class BTNode<E> {
+    /// 元素值
     var val: E
-    var parent: Self?
-    var left: Self?
-    var right: Self?
+    /// 父节点
+    var parent: BTNode<E>?
+    /// 左子树
+    var left: BTNode<E>?
+    /// 右子树
+    var right: BTNode<E>?
     
-    public init(val: E) {
+    /// 构造器方法
+    public init(val: E, parent: BTNode<E>? = nil, left: BTNode<E>? = nil, right: BTNode<E>? = nil) {
         self.val = val
+        self.parent = parent
+        self.left = left
+        self.right = right
     }
 }
 
@@ -26,7 +35,7 @@ final class AVLNode<E>: BTNode<E> {
     
     /// 平衡因子
     var factor: Int {
-        (left?.height ?? 0) - (right?.height ?? 0)
+        ((left as? AVLNode<E>)?.height ?? 0) - ((right as? AVLNode<E>)?.height ?? 0)
     }
     
 }
@@ -46,7 +55,21 @@ final class RBNode<E>: BTNode<E> {
     }
 }
 
+
+/// 二叉搜索树
 public protocol BST {
+    /// 泛型类型
     associatedtype Element
+    /// 根节点
     var root: BTNode<Element>? { get }
+}
+
+
+extension BST {
+    /// 插入
+}
+
+/// 遍历操作
+public extension BST {
+    
 }

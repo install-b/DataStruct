@@ -45,7 +45,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
     // 尾结点
     private var footer: Node<T>?
     // 节点数量
-    public var count: Int = 0
+    public private(set) var count: Int = 0
     
     public init() {}
     

@@ -26,7 +26,7 @@ public struct SingleLinkList<T: Equatable>: LinkList {
     // 头结点
     private var header: Node<T>?
     // 节点数量
-    public var count: Int = 0
+    public private(set) var count: Int = 0
     
     public init() {}
     
