@@ -26,7 +26,13 @@ public struct AVLTree<E>: BST {
     /// 跟节点
     private var _root: AVLNode<E>?
     public var root: BTNode<E>? {
-        _root
+        set {
+            _root = newValue as? AVLNode<E>
+        }
+        get {
+            _root
+        }
+        
     }
     
     /// 比较器
@@ -37,6 +43,13 @@ public struct AVLTree<E>: BST {
         self.cmp = cmp
     }
     
+    public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
+        return AVLNode(val: val, parent: parent)
+    }
+    
+    public func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
+        
+    }
 }
 
 /// 元素具备可比性
