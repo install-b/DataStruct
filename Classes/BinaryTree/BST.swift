@@ -100,7 +100,7 @@ public extension BST {
             case .orderedSame:
                 let origin = node.val
                 /// 移除Node
-                
+                // 删除元素
                 return origin
             case .orderedAscending:
                 guard let next = node.left else { return nil }
@@ -217,7 +217,7 @@ public extension BST {
 
 
 extension BST {
-    /// 
+    /// 即将旋转
     private mutating func prepareMakeRatio(_ node: BTNode<Element>, child: BTNode<Element>) {
         if let parent = node.parent {
             if isSameObject(parent.left, node) {
