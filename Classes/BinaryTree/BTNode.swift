@@ -29,4 +29,27 @@ public class BTNode<E>: CustomDebugStringConvertible {
     public var debugDescription: String {
         "val=: \(val), \nleft: \(left)\nright:\(right)"
     }
+
+    open func getBSTReplaceNode() -> (node: BTNode<E>, isLeft: Bool)? {
+        guard var node = left, let rightNode = node.right else {
+            if var node = right {
+               
+                while node.left != nil {
+                    node = node.left!
+                }
+                return (node: node, isLeft: !isSameObject(right, node))
+            }
+            return nil
+        }
+        node = rightNode
+        while node.right != nil {
+            node = node.right!
+        }
+        return (node: node, isLeft: false)
+    }
+  
+    var isLeafNode: Bool {
+        left == nil && right == nil
+    }
+    
 }

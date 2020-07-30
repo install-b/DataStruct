@@ -35,6 +35,13 @@ public protocol BST {
     ///   - node: 新元素的节点
     ///   - parent: 插入的新元素父节点
     mutating func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>, isLeft: Bool)
+    
+    
+    /// 移除了新的元素
+    /// - Parameters:
+    ///   - parent: 被移除元素的父节点
+    ///   - grand: 被移除元素的祖父节点
+    mutating func didRemoveNode( parent: BTNode<Element>, grand: BTNode<Element>?)
 }
 
 /// insert remove
@@ -67,6 +74,7 @@ public extension BST {
                     node.left = newNode
                     /// 这里维持平衡的代码交给实体类解决
                     didInsert(newNode, parent: node, isLeft: true)
+                    check()
                     return nil
                 }
             case .orderedDescending:
@@ -78,6 +86,7 @@ public extension BST {
                     node.right = newNode
                     /// 这里维持平衡的代码交给实体类解决
                     didInsert(newNode, parent: node, isLeft: false)
+                    check()
                     return nil
                 }
             }
@@ -99,7 +108,62 @@ public extension BST {
             switch cmp(element, node.val) {
             case .orderedSame:
                 let origin = node.val
-                /// 移除Node
+                guard  let replaceNode = node.getBSTReplaceNode() else {
+                    // 删除的是叶子节点
+                    
+                    if let parent = node.parent {
+                        if isSameObject(parent.left, node) {
+                            parent.left = nil
+                        } else {
+                            parent.right = nil
+                        }
+                        didRemoveNode(parent: parent, grand: parent.parent)
+                    } else {
+                        // 没有替换的节点几位根节点
+                        root = nil
+                    }
+                    check()
+                    return origin
+                }
+                /// 实际被 移除Node 的父节点
+                var removeParent: BTNode<Element>?
+                
+                if let child = replaceNode.isLeft ? replaceNode.node.right : replaceNode.node.left {
+                    child.parent = replaceNode.node.parent
+                    if isSameObject(replaceNode.node.parent?.left, replaceNode.node) {
+                        child.parent?.left = child
+                    } else {
+                        child.parent?.right = child
+                    }
+                    
+                    removeParent = child
+                } else {
+                    removeParent = replaceNode.node
+                    if let p = replaceNode.node.parent, isSameObject(p.left, replaceNode.node) {
+                        removeParent?.parent?.left = nil
+                    } else {
+                       removeParent?.parent?.right = nil
+                    }
+                    removeParent?.parent = nil
+                }
+                replaceNode.node.left = node.left
+                node.left?.parent = replaceNode.node
+                replaceNode.node.right = node.right
+                node.right?.parent = replaceNode.node
+                replaceNode.node.parent = node.parent
+                if let p = node.parent  {
+                    if isSameObject(p.left, node) {
+                        p.left = replaceNode.node
+                    } else {
+                        p.right = replaceNode.node
+                    }
+                } else {
+                    root = replaceNode.node
+                }
+                /// 高度发生了变化
+                check()
+                didRemoveNode(parent: removeParent!, grand: removeParent?.parent)
+                check()
                 // 删除元素
                 return origin
             case .orderedAscending:
@@ -213,6 +277,23 @@ public extension BST {
             }
         }
     }
+    
+    func check() {
+        guard let node = root else { return }
+        var nodes = [node]
+        while !nodes.isEmpty {
+            let n = nodes.removeFirst()
+            if let left = n.left {
+                nodes.append(left)
+                assert(isSameObject(left.parent, n))
+            }
+            if let right = n.right {
+                nodes.append(right)
+                assert(isSameObject(right.parent, n))
+            }
+
+        }
+    }
 }
 
 
@@ -246,6 +327,7 @@ extension BST {
         let orginRight = lChild.right
         lChild.right = node
         node.left = orginRight
+        orginRight?.parent = node
     }
     
     
@@ -260,6 +342,7 @@ extension BST {
         let orginRight = rChild.left
         rChild.left = node
         node.right = orginRight
+        orginRight?.parent = node
     }
 
 }
