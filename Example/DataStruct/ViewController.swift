@@ -20,7 +20,8 @@ class ViewController: UIViewController {
 //        
 //        testSkipList()
         
-        bstAVLTest()
+//        bstAVLTest()
+        bstRBTest()
     }
 }
 
@@ -192,7 +193,34 @@ extension ViewController {
     
     
     func bstRBTest() {
+        var rb = RBTree<Int>()
+        func printBST() {
+            /// 中序遍历
+            print("\n中序遍历:")
+            rb.inoderTranersal {
+                print($0)
+            }
+            print("\n前序遍历:")
+            rb.preoderTranersal {
+                print($0)
+            }
+            print("\n后序遍历:")
+            rb.postoderTranersal {
+                print($0)
+            }
+            print("\n层序遍历:")
+            rb.leveloderTranersal {
+                print($0)
+            }
+        }
         
+        (1...10).forEach {
+            rb.insert($0)
+        }
+        printBST()
+        
+        print("\n\n")
+        rb.printNodes()
     }
     
 }

@@ -155,7 +155,7 @@ public struct AVLTree<E>: BST {
                     makeRightRatio(grand, lChild: parent)
                     node = parent
                 } else {
-                    // LR 型
+                    // RL 型
                     // p 进行右旋转 然后 g 进行左旋转
                     makeLeftRatio(parent, rChild: node)
                     makeRightRatio(grand, lChild: node)
