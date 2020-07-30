@@ -285,10 +285,14 @@ public extension BST {
             let n = nodes.removeFirst()
             if let left = n.left {
                 nodes.append(left)
+                /// 左节点小于父节点
+                assert(cmp(n.val, left.val) == .orderedDescending)
                 assert(isSameObject(left.parent, n))
             }
             if let right = n.right {
                 nodes.append(right)
+                /// 右节点大于父节点
+                assert(cmp(n.val, right.val) == .orderedAscending)
                 assert(isSameObject(right.parent, n))
             }
 
