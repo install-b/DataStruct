@@ -40,8 +40,8 @@ final class RBNode<E>: BTNode<E> {
         }
     }
     
-    /// 颜色
-    var color: Color = red
+    /// 颜色 默认给个黑色
+    var color: Color = black
     
     /// 染色
     func render(color: Color) {
@@ -69,18 +69,23 @@ public struct RBTree<E>: BST {
     /// 比较器
     public let cmp: BSTElementCompare<E>
     
-    /// 构造方法
+    /// 构造方法 自定义比较
     public init(cmp: @escaping BSTElementCompare<E>) {
         self.cmp = cmp
     }
     
+    
+    /// 创建红黑树节点
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         RBNode(val: val, parent: parent)
     }
     
+    /// 插入了元素 实现自平衡
     public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
         
     }
+    
+    /// 移除了元素 实现自平衡
     public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
         
     }

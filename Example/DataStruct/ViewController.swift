@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 //        
 //        testSkipList()
         
-        bstTest()
+        bstAVLTest()
     }
 }
 
@@ -136,7 +136,7 @@ extension ViewController {
 }
 
 extension ViewController {
-    func bstTest() {
+    func bstAVLTest() {
         var avl = AVLTree<Int>()
         func printBST() {
             /// 中序遍历
@@ -180,14 +180,19 @@ extension ViewController {
         printBST()
         avl.remove(8)
         assert(avl.check() == 20 - 3 - 1)
-//        avl.remove(1)
-//        avl.remove(5)
-//        assert(avl.count == 19 - 3  - 2)
-//        avl.insert(10)
-//        assert(avl.count == 19 - 3  - 2)
+        avl.remove(1)
+        avl.remove(5)
+        assert(avl.count == 20 - 3  - 1 - 2)
+        avl.insert(10)
+        assert(avl.check() == avl.count && avl.count == 20 - 3  - 1 - 2)
         
         print("\n----------------------------------\n")
          printBST()
+    }
+    
+    
+    func bstRBTest() {
+        
     }
     
 }

@@ -78,12 +78,13 @@ public struct AVLTree<E>: BST {
     public init(cmp: @escaping BSTElementCompare<E>) {
         self.cmp = cmp
     }
-
+    
+    /// 创建AVL节点
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         AVLNode(val: val, parent: parent)
     }
     
-    /// 插入了新的元素
+    /// 插入了新的元素 实现自平衡
     /// - Parameters:
     ///   - node: 插入的新节点
     ///   - parent: 插入的新节点的父节点
@@ -97,7 +98,7 @@ public struct AVLTree<E>: BST {
     }
     
     
-    /// 移除元素发生了变化
+    /// 移除元素发生了变化 实现自平衡
     /// - Parameters:
     ///   - parent: 被移除元素的父节点
     ///   - grand: 被移除元素的祖父节点

@@ -8,7 +8,7 @@
 import Foundation
 
 /// 二叉树节点 Abstract Class
-public class BTNode<E>: CustomDebugStringConvertible {
+public class BTNode<E> {
     /// 元素值
     var val: E
     /// 父节点
@@ -25,15 +25,12 @@ public class BTNode<E>: CustomDebugStringConvertible {
         self.left = left
         self.right = right
     }
-    
-    public var debugDescription: String {
-        "val=: \(val), \nleft: \(left)\nright:\(right)"
-    }
-  
+}
+
+public extension BTNode {
     var isLeafNode: Bool {
         left == nil && right == nil
     }
-    
 }
 
 extension BTNode {
@@ -53,5 +50,16 @@ extension BTNode {
             node = node.right!
         }
         return (node: node, isLeft: false)
+    }
+    
+    @discardableResult
+    func removeFromParent() -> BTNode<E>? {
+        guard let parent = parent else { return nil }
+        if isSameObject(parent.left, self) {
+            parent.left = nil
+        } else {
+            parent.right = nil
+        }
+        return parent
     }
 }

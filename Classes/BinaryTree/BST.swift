@@ -115,12 +115,7 @@ public extension BST {
                 /// 寻找非叶子节点的实际删除节点位置
                 guard let replaceNode = node.getBSTReplaceNode() else {
                     // 删除的是叶子节点  实际要删除的就是本身
-                    if let parent = node.parent {
-                        if isSameObject(parent.left, node) {
-                            parent.left = nil
-                        } else {
-                            parent.right = nil
-                        }
+                    if let parent = node.removeFromParent() {
                         /// 删除了叶子节点  实际类处理删除后的平衡逻辑
                         didRemoveNode(node: node, parent: parent)
                     } else {
@@ -150,15 +145,7 @@ public extension BST {
                 } else {
                     /// 不存在 实际要删除的节点是叶子节点  直接删除自己
                     realRMNode = replaceNode.node
-                    removeParent = replaceNode.node.parent
-                    
-                    if let p = replaceNode.node.parent {
-                        if isSameObject(p.left, replaceNode.node) {
-                            p.left = nil
-                        } else {
-                            p.right = nil
-                        }
-                    }
+                    removeParent = replaceNode.node.removeFromParent()
                 }
                 
                 /// 高度发生了变化 实体类自平衡调节
