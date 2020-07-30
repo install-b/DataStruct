@@ -126,11 +126,12 @@ public extension BST {
                     return origin
                 }
                 
-                /// 替换要删除的节点
+                /// 1. 替换要删除的节点
                 node.val = replaceNode.node.val
+                
+                // 2. 再实际删除实际的叶子节点
                 let realRMNode: BTNode<Element>
                 let removeParent: BTNode<Element>?
-                
                 /// 这里检验实际删除的节点是否还有子节点
                 if let child = replaceNode.isLeft ? replaceNode.node.right : replaceNode.node.left {
                     // 如果存在则将它的子节点先替换自己 实际删除的是子节点
@@ -148,7 +149,7 @@ public extension BST {
                     removeParent = replaceNode.node.removeFromParent()
                 }
                 
-                /// 高度发生了变化 实体类自平衡调节
+                /// 3. 高度发生了变化 实体类自平衡调节
                 didRemoveNode(node: realRMNode, parent: removeParent)
                 
                 // 删除元素
