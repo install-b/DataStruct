@@ -88,7 +88,7 @@ public struct AVLTree<E>: BST {
     ///   - node: 插入的新节点
     ///   - parent: 插入的新节点的父节点
     ///   - isLeft: 是否为left
-    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
+    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
         count += 1
         guard var node = node as? AVLNode<E>, var parent = parent as? AVLNode<E> else { return }
         node.updateHight()
@@ -101,10 +101,9 @@ public struct AVLTree<E>: BST {
     /// - Parameters:
     ///   - parent: 被移除元素的父节点
     ///   - grand: 被移除元素的祖父节点
-    public mutating func didRemoveNode(parent: BTNode<E>, grand: BTNode<E>?) {
+    public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
         count -= 1
-        (parent as? AVLNode<E>)?.updateHight()
-        guard parent.isLeafNode, let grand = grand as? AVLNode<E> else {
+        guard let grand = parent as? AVLNode<E> else {
             return
         }
         

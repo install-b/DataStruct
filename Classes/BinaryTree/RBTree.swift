@@ -78,10 +78,10 @@ public struct RBTree<E>: BST {
         RBNode(val: val, parent: parent)
     }
     
-    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
+    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
         
     }
-    public mutating func didRemoveNode(parent: BTNode<E>, grand: BTNode<E>?) {
+    public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
         
     }
 }

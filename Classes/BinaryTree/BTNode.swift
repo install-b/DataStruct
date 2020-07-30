@@ -29,8 +29,15 @@ public class BTNode<E>: CustomDebugStringConvertible {
     public var debugDescription: String {
         "val=: \(val), \nleft: \(left)\nright:\(right)"
     }
+  
+    var isLeafNode: Bool {
+        left == nil && right == nil
+    }
+    
+}
 
-    open func getBSTReplaceNode() -> (node: BTNode<E>, isLeft: Bool)? {
+extension BTNode {
+    func getBSTReplaceNode() -> (node: BTNode<E>, isLeft: Bool)? {
         guard var node = left, let rightNode = node.right else {
             if var node = right {
                
@@ -47,9 +54,4 @@ public class BTNode<E>: CustomDebugStringConvertible {
         }
         return (node: node, isLeft: false)
     }
-  
-    var isLeafNode: Bool {
-        left == nil && right == nil
-    }
-    
 }
