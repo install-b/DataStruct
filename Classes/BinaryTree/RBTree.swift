@@ -68,7 +68,7 @@ final class RBNode<E>: BTNode<E> {
 }
 
 
-/// AVL树
+/// 红黑树
 public struct RBTree<E>: BST {
     
     public typealias Element = E
@@ -111,7 +111,7 @@ public struct RBTree<E>: BST {
         }
         /// 插入的父节点是否为红色   是黑色不需要处理
         guard parent.color == red else {  return }
-
+        /// 自平衡
         balanceNode(node: node, parent: parent)
         
     }
@@ -221,7 +221,7 @@ public struct RBTree<E>: BST {
                 nodes.append(right)
             }
             
-            print("val: \(n.val) \(n.color == red ? "♥" : "♠")")
+            print("val:\(n.color == red ? "❤️" : "♠️") \(n.val) ")
         }
     }
 }
