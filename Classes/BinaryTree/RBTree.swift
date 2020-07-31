@@ -194,10 +194,8 @@ public struct RBTree<E>: BST {
         upNode.render(color: black)
         upNode.lChild?.render(color: red)
         upNode.rChild?.render(color: red)
-        if let grandF = upNode.fater {
-            if grandF.color == red {
-                balanceNode(node: upNode, parent: grandF)
-            }
+        if let newNode = upNode.fater, newNode.color == red, let newParent = newNode.fater, newParent.color == red {
+            balanceNode(node: newNode, parent: newParent)
         }
         
     }
