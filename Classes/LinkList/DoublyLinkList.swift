@@ -77,7 +77,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
         count += 1
     }
     
-    #if swift(>=5.1)
+    #if swift(>=5.2)
     public mutating func append<S>(contentsOf newElements: S) where S : Sequence, Self.Element == S.Element {
         let nodes = newElements.map { Node(val: $0) }
         var pre: Node<T>?
@@ -436,7 +436,7 @@ extension DoublyLinkList {
 
 extension DoublyLinkList {
 
-    #if swift(>=5.1)
+    #if swift(>=5.2)
     /// 快速构造
     /// - Parameter elements: 元素集合
     public init<S>(contentsOf elements: S) where S : Sequence, Self.Element == S.Element {

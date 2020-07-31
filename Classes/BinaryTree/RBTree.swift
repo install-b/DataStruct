@@ -11,6 +11,7 @@ import Foundation
 typealias Color = Bool
 let red: Color = true
 let black: Color = false
+
 /// 红黑树 节点
 final class RBNode<E>: BTNode<E> {
     var lChild: RBNode<E>? {

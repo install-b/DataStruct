@@ -63,7 +63,7 @@ public struct SingleLinkList<T: Equatable>: LinkList {
         node.next = Node(val: element)
         count += 1
     }
-    #if swift(>=5.1)
+    #if swift(>=5.2)
     public mutating func append<S>(contentsOf newElements: S) where S : Sequence, Self.Element == S.Element {
         let nodes = newElements.map { Node(val: $0) }
         var pre: Node<T>?
@@ -322,7 +322,7 @@ extension SingleLinkList {
 }
 
 extension SingleLinkList {
-    #if swift(>=5.1)
+    #if swift(>=5.2)
     /// 快速构造
     /// - Parameter elements: 元素集合
     public init<S>(contentsOf elements: S) where S : Sequence, Self.Element == S.Element {
