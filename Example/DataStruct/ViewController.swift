@@ -214,13 +214,35 @@ extension ViewController {
             }
         }
         
-        (1...10).forEach {
-            rb.insert($0)
-        }
-        printBST()
+//        (1...10).forEach {
+//            rb.insert($0)
+//        }
+        /*
+         [14, 80, 55, 59, 29, 19, 75, 56, 47, 52, 47, 84, 37, 73, 23, 12, 49, 81, 96, 90]
+         [12, 40, 65, 56, 50, 20, 63, 16, 81, 94, 55, 63, 20, 18, 84, 82, 50, 41, 42, 38]
+         */
+        let arr = [12, 40, 65, 56, 50, 20, 63, 16, 81, 94, 55, 63, 20, 18, 84, 82, 50, 41, 42, 38]
         
-        print("\n\n")
-        rb.printNodes()
+        arr.forEach {
+            rb.insert($0)
+            print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+        }
+        
+//        var count = 0
+//        var insertArr = [Int]()
+//
+//        while count < 20 {
+//            let ele = Int.random(in: 10...99)
+//            insertArr.append(ele)
+//            rb.insert(ele)
+//            count += 1
+//        }
+//
+//        printBST()
+//        print(insertArr)
+//        print("\n\n \(rb.root?.printTreeNode() ?? "nil")")
+        
+        //rb.printNodes()
     }
     
 }

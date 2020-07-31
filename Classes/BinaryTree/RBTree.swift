@@ -41,10 +41,14 @@ final class RBNode<E>: BTNode<E> {
     }
     
     /// 颜色 默认给个黑色
-    var color: Color = red
+    private(set) var color: Color = red
     
     /// 染色
     func render(color: Color) {
+        if parent == nil, color == red {
+            self.color = black
+            return
+        }
         self.color = color
     }
     
@@ -64,7 +68,9 @@ final class RBNode<E>: BTNode<E> {
         return fater.brother
     }
     
-    
+    override var nodeDesc: String {
+        return "\(color == red ? "❤️" : "♠️") \(val) "
+    }
 }
 
 
@@ -106,7 +112,7 @@ public struct RBTree<E>: BST {
         guard let node = node as? RBNode<E> else { return }
         guard let parent = parent as? RBNode<E> else {
             // 插入的是根节点 需要染黑
-            node.color = black
+            node.render(color: black)
             return
         }
         /// 插入的父节点是否为红色   是黑色不需要处理
@@ -122,9 +128,16 @@ public struct RBTree<E>: BST {
         if let uncle = parent.brother {
             /// 叔节点是红色
             if uncle.color == red {
-                parent.color = black
-                uncle.color = black
-                parent.fater?.color = red
+                parent.render(color: black)
+                uncle.render(color: black)
+                if let grand = parent.fater {
+                    grand.render(color: red)
+                    if let grandF = grand.fater, grandF.color == red {
+                        balanceNode(node: grand, parent: grandF)
+                    }
+                }
+                
+
                 return
             }
             
@@ -133,70 +146,57 @@ public struct RBTree<E>: BST {
         
         // 是否存在祖父节点
         guard let grand = parent.fater else {
+            // 不存在
+            if parent.color == red {
+                print("根节点变成了红节点")
+            }
+            guard let brother = node.brother, brother.color == black else {
+                parent.render(color: black)
+                return
+            }
+            
+            
             return
         }
         
         let isPleft = isSameObject(grand.left, parent)
         let isLeft = isSameObject(parent.left, node)
+        var upNode = parent
+        
         if isLeft {
             if isPleft {
                 /// LL型 右旋转
                 makeRightRatio(grand, lChild: parent)
-                /// 自己染黑
-                node.color = black
-                
-                if let grandF = parent.fater {
-                    if grandF.color == red {
-                        balanceNode(node: grand, parent: grandF)
-                    }
-                } else {
-                    parent.color = black
-                }
-                
+                /// 父节点染黑
+                upNode = parent
             } else {
                 // LR型
                 makeRightRatio(parent, lChild: node)
                 makeLeftRatio(grand, rChild: node)
-                /// 父节点染黑
-                parent.color = black
-                if let grandF = node.fater {
-                    if grandF.color == red {
-                        balanceNode(node: node, parent: grandF)
-                    }
-                } else {
-                    node.color = black
-                }
+                /// 自己染黑
+                upNode = node
             }
         } else {
             if isPleft {
                 /// RL型 右旋转
                 makeLeftRatio(parent, rChild: node)
                 makeRightRatio(grand, lChild: node)
-                /// 父节点染黑
-                parent.color = black
-                if let grandF = node.fater {
-                    if grandF.color == red {
-                        balanceNode(node: node, parent: grandF)
-                    }
-                } else {
-                    node.color = black
-                }
+                /// 自己染黑
+                upNode = node
             } else {
                 // RR型
                 makeLeftRatio(grand, rChild: parent)
-                /// 自己染黑
-                node.color = black
-                
-                /// 判断再上父节点是否为红色
-                if let grandF = parent.fater {
-                    if grandF.color == red {
-                        /// 继续平衡
-                        balanceNode(node: grand, parent: grandF)
-                    }
-                } else {
-                    /// 说明是跟节点 需要染成黑色
-                    parent.color = black
-                }
+                /// 父节点染黑
+                upNode = parent
+            }
+        }
+        /// 自己染黑
+        upNode.render(color: black)
+        upNode.lChild?.render(color: red)
+        upNode.rChild?.render(color: red)
+        if let grandF = upNode.fater {
+            if grandF.color == red {
+                balanceNode(node: upNode, parent: grandF)
             }
         }
         

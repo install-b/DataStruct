@@ -25,11 +25,83 @@ public class BTNode<E> {
         self.left = left
         self.right = right
     }
+    
+    open var nodeDesc: String {
+        "\(val)"
+    }
+    
 }
 
 public extension BTNode {
     var isLeafNode: Bool {
         left == nil && right == nil
+    }
+    
+    
+    func printTreeNode() -> String {
+        
+        let nodes = levelNodes()
+        var maxCount = 0
+        func toSting(reversed level: Int) -> String {
+            if maxCount == 0 {
+                var str = ""
+                for n in nodes[level] {
+                   str += "  " + (n?.nodeDesc ?? "  ")
+                }
+                maxCount = str.count
+                return str
+            }
+            
+            var nsstring = String(repeating: " ", count: maxCount) as NSString
+            
+            let count = nodes[level].count
+            let offset = maxCount / count
+            let halfIndex = offset >> 1
+            for i in 0..<count {
+                guard let node = nodes[level][i] else { continue }
+                let centerIdnex = halfIndex + i * offset
+                let nodeDesc = node.nodeDesc
+                let beginIndex = centerIdnex - (nodeDesc.count >> 1)
+               nsstring = nsstring.replacingCharacters(in: NSRange(location: beginIndex, length: nodeDesc.count), with: nodeDesc) as NSString
+            }
+            
+            return nsstring as String
+        }
+        
+        var str = ""
+        
+        
+        for item in (0...(nodes.count - 1)).reversed() {
+            str = toSting(reversed: item) + "\n\n" + str
+        }
+        
+        return str
+    }
+    
+    func levelNodes() -> [[BTNode<E>?]] {
+        var nodes = [[BTNode<E>?]]()
+        var tempNodes: [BTNode<E>?] = []
+        tempNodes.append(self)
+        var hasNext = true
+        while hasNext {
+            nodes.append(tempNodes)
+            var nextNodes: [BTNode<E>?] = []
+            hasNext = false
+            func appendNext(node: BTNode<E>?) {
+                if node != nil {
+                    hasNext = true
+                }
+                nextNodes.append(node)
+            }
+            while !tempNodes.isEmpty {
+                let node = tempNodes.removeFirst()
+                appendNext(node: node?.left)
+                appendNext(node: node?.right)
+            }
+            
+            tempNodes = nextNodes
+        }
+        return nodes
     }
 }
 
