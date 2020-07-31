@@ -27,6 +27,6 @@ public class BTNode<E>: CustomDebugStringConvertible {
     }
     
     public var debugDescription: String {
-        "val=: \(val), \nleft: \(left)\nright:\(right)"
+        "val=: \(val)" //\nleft: \(left)\nright:\(right)
     }
 }
