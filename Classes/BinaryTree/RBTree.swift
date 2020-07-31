@@ -105,8 +105,42 @@ public struct RBTree<E>: BST {
         RBNode(val: val, parent: parent)
     }
     
+    public func printNodes() {
+        guard let node = _root else { return }
+        
+        var nodes = [node]
+        
+        while !nodes.isEmpty {
+            let n = nodes.removeFirst()
+            if let left = n.lChild {
+                nodes.append(left)
+            }
+            if let right = n.rChild {
+                nodes.append(right)
+            }
+            
+            print("val:\(n.color == red ? "❤️" : "♠️") \(n.val) ")
+        }
+    }
+}
+
+
+/// 元素具备可比性
+extension RBTree where E: Comparable {
+    public init() {
+        self.cmp = { (e1, e2) -> ComparisonResult in
+            if e1 == e2 {
+                return .orderedSame
+            }
+            return e1 < e2 ? .orderedAscending : .orderedDescending
+        }
+    }
+}
+
+/// 自平衡树
+extension RBTree: BBST {
     /// 插入了元素 实现自平衡
-    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
+    mutating public func didInsert(node: BTNode<E>, parent: BTNode<E>?) {
         count += 1
         /// 插入元素实现自平衡
         guard let node = node as? RBNode<E> else { return }
@@ -121,6 +155,13 @@ public struct RBTree<E>: BST {
         balanceNode(node: node, parent: parent)
         
     }
+    
+    /// 移除了元素 实现自平衡
+    mutating public func didRemove(node: BTNode<E>, parent: BTNode<E>?) {
+        count -= 1
+        
+    }
+
     
     mutating func balanceNode(node: RBNode<E>, parent: RBNode<E>) {
         /// 插入的父节点是红色
@@ -196,43 +237,6 @@ public struct RBTree<E>: BST {
         upNode.rChild?.render(color: red)
         if let newNode = upNode.fater, newNode.color == red, let newParent = newNode.fater, newParent.color == red {
             balanceNode(node: newNode, parent: newParent)
-        }
-        
-    }
-    /// 移除了元素 实现自平衡
-    public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
-        count -= 1
-        
-    }
-    
-    public func printNodes() {
-        guard let node = _root else { return }
-        
-        var nodes = [node]
-        
-        while !nodes.isEmpty {
-            let n = nodes.removeFirst()
-            if let left = n.lChild {
-                nodes.append(left)
-            }
-            if let right = n.rChild {
-                nodes.append(right)
-            }
-            
-            print("val:\(n.color == red ? "❤️" : "♠️") \(n.val) ")
-        }
-    }
-}
-
-
-/// 元素具备可比性
-extension RBTree where E: Comparable {
-    public init() {
-        self.cmp = { (e1, e2) -> ComparisonResult in
-            if e1 == e2 {
-                return .orderedSame
-            }
-            return e1 < e2 ? .orderedAscending : .orderedDescending
         }
     }
 }

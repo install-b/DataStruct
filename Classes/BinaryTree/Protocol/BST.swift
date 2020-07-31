@@ -10,38 +10,18 @@ import Foundation
 /// 比较
 public typealias BSTElementCompare<E> = (_ e1: E, _ e2: E) -> ComparisonResult
 
-/// 遍历
-public typealias BSTElementEnumer<E> = (_ e: E) -> Void
-
 
 /// 二叉搜索树
-public protocol BST {
-    /// 泛型类型
-    associatedtype Element
-    
-    /// 根节点
-    var root: BTNode<Element>? { get set }
-    
+public protocol BST: BinaryTree {
+
     /// 比较器
     var cmp: BSTElementCompare<Element> { get }
     
     /// 构建节点
     /// - Parameter val: 元素值
     func createNode(with val: Element, parent: BTNode<Element>?) -> BTNode<Element>
-    
-    /// 插入了新的元素
-    /// - Parameters:
-    ///   - node: 新元素的节点
-    ///   - parent: 插入的新元素父节点
-    mutating func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>?)
-    
-    
-    /// 移除了新的元素
-    /// - Parameters:
-    ///   - node: 被移除元素的节点
-    ///   - parent: 被移除元素的父节点
-    mutating func didRemoveNode(node: BTNode<Element>, parent: BTNode<Element>?)
 }
+
 
 /// insert remove
 public extension BST {
@@ -55,7 +35,6 @@ public extension BST {
             /// 插入根节点
             let newNode = createNode(with: element, parent: nil)
             root = newNode
-            didInsert(newNode, parent: nil)
             return nil
         }
         
@@ -74,7 +53,7 @@ public extension BST {
                     let newNode = createNode(with: element, parent: node)
                     node.left = newNode
                     /// 这里维持平衡的代码交给实体类解决
-                    didInsert(newNode, parent: node)
+                    
                     check()
                     return nil
                 }
@@ -86,14 +65,11 @@ public extension BST {
                     let newNode = createNode(with: element, parent: node)
                     node.right = newNode
                     /// 这里维持平衡的代码交给实体类解决
-                    didInsert(newNode, parent: node)
                     check()
                     return nil
                 }
             }
         }
-        
-        
     }
     
     /// 移除元素
@@ -117,11 +93,11 @@ public extension BST {
                     // 删除的是叶子节点  实际要删除的就是本身
                     if let parent = node.removeFromParent() {
                         /// 删除了叶子节点  实际类处理删除后的平衡逻辑
-                        didRemoveNode(node: node, parent: parent)
+//                        didRemoveNode(node, parent: parent)
                     } else {
                         // 没有替换的节点几位根节点
                         root = nil
-                        didRemoveNode(node: node, parent: nil)
+//                        didRemoveNode(node, parent: nil)
                     }
                     return origin
                 }
@@ -150,7 +126,7 @@ public extension BST {
                 }
                 
                 /// 3. 高度发生了变化 实体类自平衡调节
-                didRemoveNode(node: realRMNode, parent: removeParent)
+//                didRemoveNode(realRMNode, parent: removeParent)
                 
                 // 删除元素
                 return origin
@@ -165,110 +141,11 @@ public extension BST {
     }
 }
 
-
-/// 遍历操作
-public extension BST {
-    
-    /// 前序遍历
-    /// - Parameters:
-    ///   - leftFirst: 是否先遍历左边
-    ///   - block: 遍历回调block
-    func preoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
-        func tranersalLeftFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            block(node.val)
-            tranersalLeftFirst(node: node.left)
-            tranersalLeftFirst(node: node.right)
-        }
-        func tranersalRightFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            block(node.val)
-            tranersalRightFirst(node: node.right)
-            tranersalRightFirst(node: node.left)
-        }
-        
-        leftFirst ? tranersalLeftFirst(node: root) : tranersalRightFirst(node: root)
-    }
-    
-    /// 后续遍历
-    /// - Parameters:
-    ///   - leftFirst: 是否先遍历左边
-    ///   - block: 遍历回调block
-    func postoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
-        func tranersalLeftFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            tranersalLeftFirst(node: node.left)
-            tranersalLeftFirst(node: node.right)
-            block(node.val)
-        }
-        func tranersalRightFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            tranersalRightFirst(node: node.right)
-            tranersalRightFirst(node: node.left)
-            block(node.val)
-        }
-        
-        leftFirst ? tranersalLeftFirst(node: root) : tranersalRightFirst(node: root)
-    }
-    
-    /// 中序遍历
-    /// - Parameters:
-    ///   - leftFirst: 是否先遍历左边
-    ///   - block: 遍历回调block
-    func inoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
-        func tranersalLeftFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            tranersalLeftFirst(node: node.left)
-            block(node.val)
-            tranersalLeftFirst(node: node.right)
-        }
-        func tranersalRightFirst(node: BTNode<Element>?) {
-            guard let node = node else { return }
-            tranersalRightFirst(node: node.right)
-            block(node.val)
-            tranersalRightFirst(node: node.left)
-        }
-        
-        leftFirst ? tranersalLeftFirst(node: root) : tranersalRightFirst(node: root)
-    }
-    
-    /// 层序遍历
-    /// - Parameters:
-    ///   - leftFirst: 是否先遍历左边
-    ///   - block: 遍历回调block
-    func leveloderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
-        guard let node = root else { return }
-        
-        var nodes = [node]
-        
-        if leftFirst {
-            while !nodes.isEmpty {
-                let n = nodes.removeFirst()
-                if let left = n.left {
-                    nodes.append(left)
-                }
-                if let right = n.right {
-                    nodes.append(right)
-                }
-                block(n.val)
-            }
-        } else {
-            while !nodes.isEmpty {
-                let n = nodes.removeFirst()
-                if let right = n.right {
-                    nodes.append(right)
-                }
-                if let left = n.left {
-                    nodes.append(left)
-                }
-                block(n.val)
-            }
-        }
-    }
+extension BST {
     
     /// 检验搜索树的合法性
     @discardableResult
-    func check() -> Int {
+    public func check() -> Int {
         guard let node = root else { return 0}
         var nodes = [node]
         var count = 0
@@ -292,10 +169,10 @@ public extension BST {
         }
         return count
     }
-
 }
 
 
+/// 旋转操作
 extension BST {
     /// 即将旋转
     private mutating func prepareMakeRatio(_ node: BTNode<Element>, child: BTNode<Element>) {

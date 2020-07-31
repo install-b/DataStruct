@@ -83,13 +83,28 @@ public struct AVLTree<E>: BST {
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         AVLNode(val: val, parent: parent)
     }
-    
+ 
+}
+
+/// 元素具备可比性
+extension AVLTree where E: Comparable {
+    public init() {
+        self.cmp = { (e1, e2) -> ComparisonResult in
+            if e1 == e2 {
+                return .orderedSame
+            }
+            return e1 < e2 ? .orderedAscending : .orderedDescending
+        }
+    }
+}
+
+/// 自平衡树
+extension AVLTree: BBST {
     /// 插入了新的元素 实现自平衡
     /// - Parameters:
     ///   - node: 插入的新节点
     ///   - parent: 插入的新节点的父节点
-    ///   - isLeft: 是否为left
-    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
+    mutating public func didInsert(node: BTNode<E>, parent: BTNode<E>?) {
         count += 1
         guard var node = node as? AVLNode<E>, var parent = parent as? AVLNode<E> else { return }
         node.updateHight()
@@ -97,12 +112,11 @@ public struct AVLTree<E>: BST {
         addjustUnbaclance(node: &node, parent: &parent)
     }
     
-    
     /// 移除元素发生了变化 实现自平衡
     /// - Parameters:
     ///   - parent: 被移除元素的父节点
     ///   - grand: 被移除元素的祖父节点
-    public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
+    mutating public func didRemove(node: BTNode<E>, parent: BTNode<E>?) {
         count -= 1
         guard let grand = parent as? AVLNode<E> else {
             return
@@ -134,7 +148,7 @@ public struct AVLTree<E>: BST {
     /// - Parameters:
     ///   - node: 失衡节点的孙子节点
     ///   - parent: 失衡节点的子节点
-    private mutating func addjustUnbaclance(node: inout AVLNode<E>, parent: inout AVLNode<E>) {
+    mutating func addjustUnbaclance(node: inout AVLNode<E>, parent: inout AVLNode<E>) {
         while true {
 
             guard let grand = parent.fater else { return }
@@ -180,18 +194,6 @@ public struct AVLTree<E>: BST {
                 return
             }
             parent = p
-        }
-    }
-}
-
-/// 元素具备可比性
-extension AVLTree where E: Comparable {
-    public init() {
-        self.cmp = { (e1, e2) -> ComparisonResult in
-            if e1 == e2 {
-                return .orderedSame
-            }
-            return e1 < e2 ? .orderedAscending : .orderedDescending
         }
     }
 }
