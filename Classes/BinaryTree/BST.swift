@@ -24,7 +24,6 @@ public protocol BST {
     
     /// 比较器
     var cmp: BSTElementCompare<Element> { get }
-
     
     /// 构建节点
     /// - Parameter val: 元素值
@@ -34,7 +33,14 @@ public protocol BST {
     /// - Parameters:
     ///   - node: 新元素的节点
     ///   - parent: 插入的新元素父节点
-    mutating func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>, isLeft: Bool)
+    mutating func didInsert(_ node: BTNode<Element>, parent: BTNode<Element>?)
+    
+    
+    /// 移除了新的元素
+    /// - Parameters:
+    ///   - node: 被移除元素的节点
+    ///   - parent: 被移除元素的父节点
+    mutating func didRemoveNode(node: BTNode<Element>, parent: BTNode<Element>?)
 }
 
 /// insert remove
@@ -47,7 +53,9 @@ public extension BST {
     mutating func insert(_ element: Element) -> Element? {
         guard var node = root else {
             /// 插入根节点
-            root = createNode(with: element, parent: nil)
+            let newNode = createNode(with: element, parent: nil)
+            root = newNode
+            didInsert(newNode, parent: nil)
             return nil
         }
         
@@ -66,7 +74,8 @@ public extension BST {
                     let newNode = createNode(with: element, parent: node)
                     node.left = newNode
                     /// 这里维持平衡的代码交给实体类解决
-                    didInsert(newNode, parent: node, isLeft: true)
+                    didInsert(newNode, parent: node)
+                    check()
                     return nil
                 }
             case .orderedDescending:
@@ -77,7 +86,8 @@ public extension BST {
                     let newNode = createNode(with: element, parent: node)
                     node.right = newNode
                     /// 这里维持平衡的代码交给实体类解决
-                    didInsert(newNode, parent: node, isLeft: false)
+                    didInsert(newNode, parent: node)
+                    check()
                     return nil
                 }
             }
@@ -99,8 +109,50 @@ public extension BST {
             switch cmp(element, node.val) {
             case .orderedSame:
                 let origin = node.val
-                /// 移除Node
+                defer {
+                    check()
+                }
+                /// 寻找非叶子节点的实际删除节点位置
+                guard let replaceNode = node.getBSTReplaceNode() else {
+                    // 删除的是叶子节点  实际要删除的就是本身
+                    if let parent = node.removeFromParent() {
+                        /// 删除了叶子节点  实际类处理删除后的平衡逻辑
+                        didRemoveNode(node: node, parent: parent)
+                    } else {
+                        // 没有替换的节点几位根节点
+                        root = nil
+                        didRemoveNode(node: node, parent: nil)
+                    }
+                    return origin
+                }
                 
+                /// 1. 替换要删除的节点
+                node.val = replaceNode.node.val
+                
+                // 2. 再实际删除实际的叶子节点
+                let realRMNode: BTNode<Element>
+                let removeParent: BTNode<Element>?
+                /// 这里检验实际删除的节点是否还有子节点
+                if let child = replaceNode.isLeft ? replaceNode.node.right : replaceNode.node.left {
+                    // 如果存在则将它的子节点先替换自己 实际删除的是子节点
+                    replaceNode.node.val = child.val
+                    if replaceNode.isLeft {
+                        replaceNode.node.right = nil
+                    } else {
+                         replaceNode.node.left = nil
+                    }
+                    realRMNode = child
+                    removeParent = replaceNode.node
+                } else {
+                    /// 不存在 实际要删除的节点是叶子节点  直接删除自己
+                    realRMNode = replaceNode.node
+                    removeParent = replaceNode.node.removeFromParent()
+                }
+                
+                /// 3. 高度发生了变化 实体类自平衡调节
+                didRemoveNode(node: realRMNode, parent: removeParent)
+                
+                // 删除元素
                 return origin
             case .orderedAscending:
                 guard let next = node.left else { return nil }
@@ -213,11 +265,39 @@ public extension BST {
             }
         }
     }
+    
+    /// 检验搜索树的合法性
+    @discardableResult
+    func check() -> Int {
+        guard let node = root else { return 0}
+        var nodes = [node]
+        var count = 0
+        
+        while !nodes.isEmpty {
+            let n = nodes.removeFirst()
+            count += 1
+            if let left = n.left {
+                nodes.append(left)
+                /// 左节点小于父节点
+                assert(cmp(n.val, left.val) == .orderedDescending)
+                assert(isSameObject(left.parent, n))
+            }
+            if let right = n.right {
+                nodes.append(right)
+                /// 右节点大于父节点
+                assert(cmp(n.val, right.val) == .orderedAscending)
+                assert(isSameObject(right.parent, n))
+            }
+
+        }
+        return count
+    }
+
 }
 
 
 extension BST {
-    /// 
+    /// 即将旋转
     private mutating func prepareMakeRatio(_ node: BTNode<Element>, child: BTNode<Element>) {
         if let parent = node.parent {
             if isSameObject(parent.left, node) {
@@ -246,6 +326,7 @@ extension BST {
         let orginRight = lChild.right
         lChild.right = node
         node.left = orginRight
+        orginRight?.parent = node
     }
     
     
@@ -260,6 +341,7 @@ extension BST {
         let orginRight = rChild.left
         rChild.left = node
         node.right = orginRight
+        orginRight?.parent = node
     }
 
 }

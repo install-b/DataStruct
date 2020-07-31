@@ -70,7 +70,7 @@ public struct AVLTree<E>: BST {
         }
         
     }
-    
+    public private(set) var count: Int = 0
     /// 比较器
     public let cmp: BSTElementCompare<E>
     
@@ -78,17 +78,63 @@ public struct AVLTree<E>: BST {
     public init(cmp: @escaping BSTElementCompare<E>) {
         self.cmp = cmp
     }
-
+    
+    /// 创建AVL节点
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         AVLNode(val: val, parent: parent)
     }
     
-    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>, isLeft: Bool) {
+    /// 插入了新的元素 实现自平衡
+    /// - Parameters:
+    ///   - node: 插入的新节点
+    ///   - parent: 插入的新节点的父节点
+    ///   - isLeft: 是否为left
+    public mutating func didInsert(_ node: BTNode<E>, parent: BTNode<E>?) {
+        count += 1
         guard var node = node as? AVLNode<E>, var parent = parent as? AVLNode<E> else { return }
         node.updateHight()
         parent.updateHight()
-       
+        addjustUnbaclance(node: &node, parent: &parent)
+    }
+    
+    
+    /// 移除元素发生了变化 实现自平衡
+    /// - Parameters:
+    ///   - parent: 被移除元素的父节点
+    ///   - grand: 被移除元素的祖父节点
+    public mutating func didRemoveNode(node: BTNode<E>, parent: BTNode<E>?) {
+        count -= 1
+        guard let grand = parent as? AVLNode<E> else {
+            return
+        }
         
+        grand.updateHight()
+        let factor = grand.factor
+        if -1...1 ~= factor {
+            if let p = grand.fater {
+                if var node = isSameObject( p.lChild , grand) ? p.rChild : p.lChild, var child = node.lChild ?? node.rChild {
+                     addjustUnbaclance(node: &child, parent: &node)
+                }
+            }
+            return
+        }
+        if factor > 0 {
+            if var parent = grand.lChild, var node = parent.lChild ?? parent.rChild {
+                addjustUnbaclance(node: &node, parent: &parent)
+            }
+        } else {
+            if var parent = grand.rChild, var node = parent.rChild ?? parent.lChild {
+                addjustUnbaclance(node: &node, parent: &parent)
+            }
+        }
+    }
+    
+    
+    /// 调节失衡节点
+    /// - Parameters:
+    ///   - node: 失衡节点的孙子节点
+    ///   - parent: 失衡节点的子节点
+    private mutating func addjustUnbaclance(node: inout AVLNode<E>, parent: inout AVLNode<E>) {
         while true {
 
             guard let grand = parent.fater else { return }
@@ -109,7 +155,7 @@ public struct AVLTree<E>: BST {
                     makeRightRatio(grand, lChild: parent)
                     node = parent
                 } else {
-                    // LR 型
+                    // RL 型
                     // p 进行右旋转 然后 g 进行左旋转
                     makeLeftRatio(parent, rChild: node)
                     makeRightRatio(grand, lChild: node)
@@ -134,10 +180,7 @@ public struct AVLTree<E>: BST {
                 return
             }
             parent = p
-
         }
-        
-
     }
 }
 

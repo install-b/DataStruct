@@ -20,7 +20,8 @@ class ViewController: UIViewController {
 //        
 //        testSkipList()
         
-        bstTest()
+//        bstAVLTest()
+        bstRBTest()
     }
 }
 
@@ -136,7 +137,7 @@ extension ViewController {
 }
 
 extension ViewController {
-    func bstTest() {
+    func bstAVLTest() {
         var avl = AVLTree<Int>()
         func printBST() {
             /// 中序遍历
@@ -167,11 +168,82 @@ extension ViewController {
 //        //printBST()
 //        avl.insert(17)
         
-        (1...15).forEach {
+        (1...20).forEach {
             avl.insert($0)
         }
+        //printBST()
+        avl.check()
+        assert(avl.count == 20)
+        (1...3).forEach {
+            avl.remove($0 * 3)
+        }
+        assert(avl.count == 20 - 3)
         printBST()
+        avl.remove(8)
+        assert(avl.check() == 20 - 3 - 1)
+        avl.remove(1)
+        avl.remove(5)
+        assert(avl.count == 20 - 3  - 1 - 2)
+        avl.insert(10)
+        assert(avl.check() == avl.count && avl.count == 20 - 3  - 1 - 2)
         
+        print("\n----------------------------------\n")
+         printBST()
+    }
+    
+    
+    func bstRBTest() {
+        var rb = RBTree<Int>()
+        func printBST() {
+            /// 中序遍历
+            print("\n中序遍历:")
+            rb.inoderTranersal {
+                print($0)
+            }
+            print("\n前序遍历:")
+            rb.preoderTranersal {
+                print($0)
+            }
+            print("\n后序遍历:")
+            rb.postoderTranersal {
+                print($0)
+            }
+            print("\n层序遍历:")
+            rb.leveloderTranersal {
+                print($0)
+            }
+        }
+        
+//        (1...10).forEach {
+//            rb.insert($0)
+//        }
+        /*
+         [14, 80, 55, 59, 29, 19, 75, 56, 47, 52, 47, 84, 37, 73, 23, 12, 49, 81, 96, 90]
+         [12, 40, 65, 56, 50, 20, 63, 16, 81, 94, 55, 63, 20, 18, 84, 82, 50, 41, 42, 38]
+         [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68, 33, 67]
+         */
+        let arr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68, 33, 67]
+
+        arr.forEach {
+            rb.insert($0)
+            print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+        }
+//
+//        var count = 0
+//        var insertArr = [Int]()
+//
+//        while count < 25 {
+//            let ele = Int.random(in: 10...99)
+//            insertArr.append(ele)
+//            rb.insert(ele)
+//            count += 1
+//        }
+//
+//        printBST()
+//        print(insertArr)
+//        print("\n\n \(rb.root?.printTreeNode() ?? "nil")")
+        
+        //rb.printNodes()
     }
     
 }
