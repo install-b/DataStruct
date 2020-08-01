@@ -9,14 +9,14 @@ import Foundation
 
 /// 自平衡二叉搜索树
 public protocol BBST: BST {
-    /// 插入了新的元素
+    /// 插入了新的元素 交给实体对象自我维持平衡
     /// - Parameters:
     ///   - node: 新元素的节点
     ///   - parent: 插入的新元素父节点
     mutating func didInsert(node: BTNode<Element>, parent: BTNode<Element>?)
     
     
-    /// 移除了新的元素
+    /// 移除了新的元素 交给实体对象自我维持平衡
     /// - Parameters:
     ///   - node: 被移除元素的节点
     ///   - parent: 被移除元素的父节点

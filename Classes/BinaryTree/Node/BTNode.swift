@@ -26,18 +26,19 @@ public class BTNode<E> {
         self.right = right
     }
     
+    /// 节点打印信息
     open var nodeDesc: String {
         "\(val)"
     }
     
-}
-
-public extension BTNode {
+    /// 是否为叶子节点
     var isLeafNode: Bool {
         left == nil && right == nil
     }
-    
-    
+}
+
+/// 打印二叉树
+public extension BTNode {
     func printTreeNode() -> String {
         
         let nodes = levelNodes()
@@ -106,6 +107,8 @@ public extension BTNode {
 }
 
 extension BTNode {
+    
+    /// 获取BST 实际删除的节点
     func getBSTReplaceNode() -> (node: BTNode<E>, isLeft: Bool)? {
         guard var node = left, let rightNode = node.right else {
             if var node = right {
@@ -124,6 +127,9 @@ extension BTNode {
         return (node: node, isLeft: false)
     }
     
+    
+    /// 从父节点移除
+    /// 返回值为父节点 本身是根节点则返回父节点为空
     @discardableResult
     func removeFromParent() -> BTNode<E>? {
         guard let parent = parent else { return nil }

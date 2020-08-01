@@ -8,7 +8,7 @@
 import Foundation
 
 /// 遍历
-public typealias BSTElementEnumer<E> = (_ e: E) -> Void
+public typealias BTElementEnumer<E> = (_ e: E) -> Void
 
 /// 二叉树
 public protocol BinaryTree {
@@ -26,7 +26,7 @@ public extension BinaryTree {
     /// - Parameters:
     ///   - leftFirst: 是否先遍历左边
     ///   - block: 遍历回调block
-    func preoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
+    func preoderTranersal(leftFirst: Bool = true, using block: BTElementEnumer<Element>) {
         func tranersalLeftFirst(node: BTNode<Element>?) {
             guard let node = node else { return }
             block(node.val)
@@ -47,7 +47,7 @@ public extension BinaryTree {
     /// - Parameters:
     ///   - leftFirst: 是否先遍历左边
     ///   - block: 遍历回调block
-    func postoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
+    func postoderTranersal(leftFirst: Bool = true, using block: BTElementEnumer<Element>) {
         func tranersalLeftFirst(node: BTNode<Element>?) {
             guard let node = node else { return }
             tranersalLeftFirst(node: node.left)
@@ -68,7 +68,7 @@ public extension BinaryTree {
     /// - Parameters:
     ///   - leftFirst: 是否先遍历左边
     ///   - block: 遍历回调block
-    func inoderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
+    func inoderTranersal(leftFirst: Bool = true, using block: BTElementEnumer<Element>) {
         func tranersalLeftFirst(node: BTNode<Element>?) {
             guard let node = node else { return }
             tranersalLeftFirst(node: node.left)
@@ -89,7 +89,7 @@ public extension BinaryTree {
     /// - Parameters:
     ///   - leftFirst: 是否先遍历左边
     ///   - block: 遍历回调block
-    func leveloderTranersal(leftFirst: Bool = true, using block: BSTElementEnumer<Element>) {
+    func leveloderTranersal(leftFirst: Bool = true, using block: BTElementEnumer<Element>) {
         guard let node = root else { return }
         
         var nodes = [node]

@@ -83,7 +83,6 @@ public struct AVLTree<E>: BST {
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         AVLNode(val: val, parent: parent)
     }
- 
 }
 
 /// 元素具备可比性

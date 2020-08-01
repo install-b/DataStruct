@@ -52,8 +52,6 @@ public extension BST {
                     /// 插入该节点的左边
                     let newNode = createNode(with: element, parent: node)
                     node.left = newNode
-                    /// 这里维持平衡的代码交给实体类解决
-                    
                     check()
                     return nil
                 }
@@ -91,13 +89,9 @@ public extension BST {
                 /// 寻找非叶子节点的实际删除节点位置
                 guard let replaceNode = node.getBSTReplaceNode() else {
                     // 删除的是叶子节点  实际要删除的就是本身
-                    if let parent = node.removeFromParent() {
-                        /// 删除了叶子节点  实际类处理删除后的平衡逻辑
-//                        didRemoveNode(node, parent: parent)
-                    } else {
+                    if node.removeFromParent() == nil {
                         // 没有替换的节点几位根节点
                         root = nil
-//                        didRemoveNode(node, parent: nil)
                     }
                     return origin
                 }
@@ -105,9 +99,6 @@ public extension BST {
                 /// 1. 替换要删除的节点
                 node.val = replaceNode.node.val
                 
-                // 2. 再实际删除实际的叶子节点
-                let realRMNode: BTNode<Element>
-                let removeParent: BTNode<Element>?
                 /// 这里检验实际删除的节点是否还有子节点
                 if let child = replaceNode.isLeft ? replaceNode.node.right : replaceNode.node.left {
                     // 如果存在则将它的子节点先替换自己 实际删除的是子节点
@@ -117,18 +108,7 @@ public extension BST {
                     } else {
                          replaceNode.node.left = nil
                     }
-                    realRMNode = child
-                    removeParent = replaceNode.node
-                } else {
-                    /// 不存在 实际要删除的节点是叶子节点  直接删除自己
-                    realRMNode = replaceNode.node
-                    removeParent = replaceNode.node.removeFromParent()
                 }
-                
-                /// 3. 高度发生了变化 实体类自平衡调节
-//                didRemoveNode(realRMNode, parent: removeParent)
-                
-                // 删除元素
                 return origin
             case .orderedAscending:
                 guard let next = node.left else { return nil }

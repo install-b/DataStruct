@@ -14,6 +14,7 @@ let black: Color = false
 
 /// 红黑树 节点
 final class RBNode<E>: BTNode<E> {
+    ///左子节点
     var lChild: RBNode<E>? {
         get {
             left as? RBNode<E>
@@ -22,7 +23,7 @@ final class RBNode<E>: BTNode<E> {
             left = newValue
         }
     }
-    
+    // 右子节点
     var rChild: RBNode<E>? {
         get {
             right as? RBNode<E>
@@ -31,7 +32,7 @@ final class RBNode<E>: BTNode<E> {
             right = newValue
         }
     }
-    
+    // 父节点
     var fater: RBNode<E>? {
         get {
             parent as? RBNode<E>
@@ -41,16 +42,13 @@ final class RBNode<E>: BTNode<E> {
         }
     }
     
-    /// 颜色 默认给个黑色
+    /// 颜色 默认为红色
     private(set) var color: Color = red
     
     /// 染色
     func render(color: Color) {
-        if parent == nil, color == red {
-            self.color = black
-            return
-        }
-        self.color = color
+        /// 根节点需要染成黑色
+        self.color = (parent == nil && color == red) ? black : red
     }
     
     /// 堂兄弟
@@ -105,24 +103,6 @@ public struct RBTree<E>: BST {
     public func createNode(with val: E, parent: BTNode<E>?) -> BTNode<E> {
         RBNode(val: val, parent: parent)
     }
-    
-    public func printNodes() {
-        guard let node = _root else { return }
-        
-        var nodes = [node]
-        
-        while !nodes.isEmpty {
-            let n = nodes.removeFirst()
-            if let left = n.lChild {
-                nodes.append(left)
-            }
-            if let right = n.rChild {
-                nodes.append(right)
-            }
-            
-            print("val:\(n.color == red ? "❤️" : "♠️") \(n.val) ")
-        }
-    }
 }
 
 
@@ -143,8 +123,8 @@ extension RBTree: BBST {
     /// 插入了元素 实现自平衡
     mutating public func didInsert(node: BTNode<E>, parent: BTNode<E>?) {
         count += 1
-        /// 插入元素实现自平衡
         guard let node = node as? RBNode<E> else { return }
+        /// 插入元素实现自平衡
         guard let parent = parent as? RBNode<E> else {
             // 插入的是根节点 需要染黑
             node.render(color: black)
@@ -163,10 +143,8 @@ extension RBTree: BBST {
         
     }
 
-    
+    /// 插入的父节点是红色 出现了连续的红色需要平衡
     mutating func balanceNode(node: RBNode<E>, parent: RBNode<E>) {
-        /// 插入的父节点是红色
-        
         if let uncle = parent.brother {
             /// 叔节点是红色
             if uncle.color == red {
@@ -178,11 +156,8 @@ extension RBTree: BBST {
                         balanceNode(node: grand, parent: grandF)
                     }
                 }
-                
-
                 return
             }
-            
         }
         // 叔节点不存在
         
@@ -196,8 +171,6 @@ extension RBTree: BBST {
                 parent.render(color: black)
                 return
             }
-            
-            
             return
         }
         
