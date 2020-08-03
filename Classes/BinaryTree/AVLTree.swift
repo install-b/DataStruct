@@ -165,23 +165,23 @@ extension AVLTree: BBST {
                 if isAddLeft {
                     /// LL 型
                     /// 进行一个右旋转
-                    makeRightRatio(grand, lChild: parent)
+                    makeRightRotate(grand, lChild: parent)
                     node = parent
                 } else {
                     // RL 型
                     // p 进行右旋转 然后 g 进行左旋转
-                    makeLeftRatio(parent, rChild: node)
-                    makeRightRatio(grand, lChild: node)
+                    makeLeftRotate(parent, rChild: node)
+                    makeRightRotate(grand, lChild: node)
                 }
                 
             } else {
                 if isAddLeft {
                     //LR 型
-                    makeRightRatio(parent, lChild: node)
-                    makeLeftRatio(grand, rChild: node)
+                    makeRightRotate(parent, lChild: node)
+                    makeLeftRotate(grand, rChild: node)
                 } else {
                     // RR 型
-                    makeLeftRatio(grand, rChild: parent)
+                    makeLeftRotate(grand, rChild: parent)
                     node = parent
                 }
             }

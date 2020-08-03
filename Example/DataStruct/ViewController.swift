@@ -222,28 +222,19 @@ extension ViewController {
          [12, 40, 65, 56, 50, 20, 63, 16, 81, 94, 55, 63, 20, 18, 84, 82, 50, 41, 42, 38]
          [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68, 33, 67]
          */
-        let arr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68, 33, 67]
+        let arr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68]
 
         arr.forEach {
             rb.insert($0)
             print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
         }
-//
-//        var count = 0
-//        var insertArr = [Int]()
-//
-//        while count < 25 {
-//            let ele = Int.random(in: 10...99)
-//            insertArr.append(ele)
-//            rb.insert(ele)
-//            count += 1
-//        }
-//
-//        printBST()
-//        print(insertArr)
-//        print("\n\n \(rb.root?.printTreeNode() ?? "nil")")
         
-        //rb.printNodes()
+        print("remove ++++++++++++++++++++++++++ remove")
+        let rmArr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65]
+        rmArr.forEach {
+            rb.remove($0)
+            print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+        }
     }
     
 }

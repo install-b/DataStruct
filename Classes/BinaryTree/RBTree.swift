@@ -48,23 +48,23 @@ final class RBNode<E>: BTNode<E> {
     /// 染色
     func render(color: Color) {
         /// 根节点需要染成黑色
-        self.color = (parent == nil && color == red) ? black : red
+        self.color = (parent == nil && color == red) ? black : color
     }
     
     /// 堂兄弟
-    var brother: RBNode<E>? {
-        if isSameObject(parent?.left, self) {
-           return parent?.right as? RBNode<E>
+    var brother: (node: RBNode<E>, isLeft: Bool)? {
+        if let node = parent?.right as? RBNode<E>, !isSameObject(node, self) {
+            return (node: node, isLeft: false)
         }
-        return parent?.left as? RBNode<E>
+        if let node = parent?.left as? RBNode<E>, !isSameObject(node, self) {
+            return (node: node, isLeft: true)
+        }
+        return nil
     }
-    
+
     /// 叔节点
     var uncle: RBNode<E>? {
-        guard let fater = fater else {
-            return nil
-        }
-        return fater.brother
+        fater?.brother?.node
     }
     
     override var nodeDesc: String {
@@ -133,19 +133,182 @@ extension RBTree: BBST {
         /// 插入的父节点是否为红色   是黑色不需要处理
         guard parent.color == red else {  return }
         /// 自平衡
-        balanceNode(node: node, parent: parent)
+        balanceOverflow(node: node, parent: parent)
         
     }
     
     /// 移除了元素 实现自平衡
     mutating public func didRemove(node: BTNode<E>, parent: BTNode<E>?) {
         count -= 1
+        /// 只需处理删除的实际上节点是黑色的就行了
+        guard let node = node as? RBNode<E>, node.color == black else { return }
+        /// 插入元素实现自平衡
+        guard let parent = parent as? RBNode<E> else {
+            return
+        }
+
+        /// 处理下溢
+        balanceUnderFlow(node: node, parent: parent)
+    }
+    
+    mutating func balanceUnderFlow(node: RBNode<E>, parent: RBNode<E>) {
+        guard  parent.color == black else {
+            /// 红父节点时候 需要将兄弟节点染红 将父节点染黑
+            parent.render(color: black)
+            if let brother = node.brother {
+                if let child = brother.node.lChild {
+                    if brother.isLeft {
+                        // LL
+                        makeRightRotate(parent, lChild: brother.node)
+                        
+                    } else {
+                        // LR
+                        makeRightRotate(brother.node, lChild: child)
+                        makeLeftRotate(parent, rChild: child)
+                    }
+                    child.render(color: black)
+                     brother.node.render(color: red)
+                } else if let child = brother.node.rChild {
+                    if brother.isLeft {
+                        // RL
+                        makeLeftRotate(brother.node, rChild: child)
+                        makeRightRotate(parent, lChild: child)
+                    } else {
+                        // RR
+                        makeLeftRotate(parent, rChild: brother.node)
+                    }
+                    child.render(color: black)
+                     brother.node.render(color: red)
+                } else {
+                    /// 兄弟是叶子节点 直接染红
+                    brother.node.render(color: red)
+                }
+                
+            }
+            return
+        }
+         /// 兄弟节点是红节点情况
+        func makeRotate(red brother: RBNode<E>, isLeft: Bool) {
+            if isLeft {
+                if let child = brother.lChild {
+                    // LL型
+                    makeRightRotate(parent, lChild: brother)
+                    /// 父节点染红 兄弟节点染黑
+                    brother.render(color: black)
+                    //parent.render(color: red)
+                    if let child = parent.lChild {
+                        if child.color == black, !child.isLeafNode {
+                            child.render(color: red)
+                        } else {
+                           parent.render(color: red)
+                       }
+                    } else {
+                        parent.render(color: red)
+                    }
+                } else if let child = brother.rChild {
+                    // RL
+                    makeLeftRotate(brother, rChild: child)
+                    makeRightRotate(parent, lChild: child)
+                    /// 兄弟染黑
+                    brother.render(color: black)
+                    brother.lChild?.render(color: red)
+                } else {
+                   //不存在的情况...
+                   fatalError("父节点是黑节点 子节点有一个黑节点情况下 必然有另一个节点")
+                }
+            } else {
+                if let child = brother.rChild {
+                    makeLeftRotate(parent, rChild: brother)
+                    /// 父节点染红 兄弟节点染黑
+                    brother.render(color: black)
+                    //parent.render(color: red)
+                    if let child = parent.rChild {
+                        if child.color == black, !child.isLeafNode {
+                            child.render(color: red)
+                        } else {
+                          parent.render(color: red)
+                        }
+                    } else {
+                        parent.render(color: red)
+                    }
+                } else if let child = brother.lChild {
+                    // RL
+                    makeLeftRotate(brother, rChild: child)
+                    makeRightRotate(parent, lChild: child)
+                    /// 兄弟染黑
+                    brother.render(color: black)
+                    brother.lChild?.render(color: red)
+                } else {
+                   //不存在的情况...
+                   fatalError("父节点是黑节点 子节点有一个黑节点情况下 必然有另一个节点")
+               }
+                
+            }
+        }
         
+         /// 兄弟节点是黑节点情况
+        func makeRotate(black brother: RBNode<E>, isLeft: Bool) {
+            if let child = brother.lChild {
+                if isLeft {
+                    // LL型
+                    makeRightRotate(parent, lChild: brother)
+                    child.render(color: black)
+                } else {
+                    // LR
+                    makeRightRotate(brother, lChild: child)
+                    makeLeftRotate(parent, rChild: child)
+                    child.render(color: black)
+                }
+            } else if let child = brother.rChild {
+                if isLeft {
+                    // RL
+                    makeLeftRotate(brother, rChild: child)
+                    makeRightRotate(parent, lChild: child)
+                    /// 兄弟染黑
+                    child.render(color: black)
+                } else {
+                    makeLeftRotate(parent, rChild: brother)
+                    /// 父节点染红 兄弟节点染黑
+                    child.render(color: black)
+                    
+                }
+            } else {
+                // 兄弟节点不存在子节点
+               // 将兄弟节点染红, 父节点产生下益 递归调用
+                // 将
+                brother.render(color: red)
+                if let grandF = parent.fater {
+                    balanceUnderFlow(node: parent, parent: grandF)
+                }
+            }
+        }
+        
+        guard let brother = node.brother else {
+            /// 不存在兄弟节点
+            /// 这种情况不存在 父节点是黑色,子节点也是黑色必然有兄弟节点
+            fatalError("父节点是黑节点 子节点有一个黑节点情况下 必然有另一个节点")
+        }
+        
+        
+        if brother.isLeft {
+            if brother.node.color == red {
+                makeRotate(red: brother.node, isLeft: true)
+            } else {
+               
+                makeRotate(black: brother.node, isLeft: true)
+            }
+        } else {
+            if brother.node.color == red {
+                makeRotate(red: brother.node, isLeft: false)
+            } else {
+                makeRotate(black: brother.node, isLeft: false)
+            }
+        }
     }
 
     /// 插入的父节点是红色 出现了连续的红色需要平衡
-    mutating func balanceNode(node: RBNode<E>, parent: RBNode<E>) {
-        if let uncle = parent.brother {
+    mutating func balanceOverflow(node: RBNode<E>, parent: RBNode<E>) {
+        if let uncle = parent.brother?.node {
             /// 叔节点是红色
             if uncle.color == red {
                 parent.render(color: black)
@@ -153,7 +316,7 @@ extension RBTree: BBST {
                 if let grand = parent.fater {
                     grand.render(color: red)
                     if let grandF = grand.fater, grandF.color == red {
-                        balanceNode(node: grand, parent: grandF)
+                        balanceOverflow(node: grand, parent: grandF)
                     }
                 }
                 return
@@ -167,7 +330,7 @@ extension RBTree: BBST {
             if parent.color == red {
                 print("根节点变成了红节点")
             }
-            guard let brother = node.brother, brother.color == black else {
+            guard let brother = node.brother?.node, brother.color == black else {
                 parent.render(color: black)
                 return
             }
@@ -181,26 +344,26 @@ extension RBTree: BBST {
         if isLeft {
             if isPleft {
                 /// LL型 右旋转
-                makeRightRatio(grand, lChild: parent)
+                makeRightRotate(grand, lChild: parent)
                 /// 父节点染黑
                 upNode = parent
             } else {
                 // LR型
-                makeRightRatio(parent, lChild: node)
-                makeLeftRatio(grand, rChild: node)
+                makeRightRotate(parent, lChild: node)
+                makeLeftRotate(grand, rChild: node)
                 /// 自己染黑
                 upNode = node
             }
         } else {
             if isPleft {
                 /// RL型 右旋转
-                makeLeftRatio(parent, rChild: node)
-                makeRightRatio(grand, lChild: node)
+                makeLeftRotate(parent, rChild: node)
+                makeRightRotate(grand, lChild: node)
                 /// 自己染黑
                 upNode = node
             } else {
                 // RR型
-                makeLeftRatio(grand, rChild: parent)
+                makeLeftRotate(grand, rChild: parent)
                 /// 父节点染黑
                 upNode = parent
             }
@@ -210,7 +373,7 @@ extension RBTree: BBST {
         upNode.lChild?.render(color: red)
         upNode.rChild?.render(color: red)
         if let newNode = upNode.fater, newNode.color == red, let newParent = newNode.fater, newParent.color == red {
-            balanceNode(node: newNode, parent: newParent)
+            balanceOverflow(node: newNode, parent: newParent)
         }
     }
 }

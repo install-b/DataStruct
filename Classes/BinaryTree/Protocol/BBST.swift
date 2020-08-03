@@ -114,6 +114,7 @@ public extension BBST {
                 if let child = replaceNode.isLeft ? replaceNode.node.right : replaceNode.node.left {
                     // 如果存在则将它的子节点先替换自己 实际删除的是子节点
                     replaceNode.node.val = child.val
+                    
                     if replaceNode.isLeft {
                         replaceNode.node.right = nil
                     } else {
