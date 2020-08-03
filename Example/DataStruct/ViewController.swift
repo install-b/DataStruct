@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 //        
 //        testSkipList()
         
-//        bstAVLTest()
+        bstAVLTest()
         bstRBTest()
     }
 }
@@ -189,6 +189,7 @@ extension ViewController {
         
         print("\n----------------------------------\n")
          printBST()
+        print("\n\n\n-----------------------\n\n\n \(avl.root?.printTreeNode() ?? "nil")")
     }
     
     
@@ -226,15 +227,15 @@ extension ViewController {
 
         arr.forEach {
             rb.insert($0)
-            print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+            
         }
-        
+        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
         print("remove ++++++++++++++++++++++++++ remove")
         let rmArr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65]
         rmArr.forEach {
             rb.remove($0)
-            print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
         }
+        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
     }
     
 }
