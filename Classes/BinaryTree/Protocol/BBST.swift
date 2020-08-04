@@ -55,7 +55,7 @@ public extension BBST {
                     node.left = newNode
                     /// 这里维持平衡的代码交给实体类解决
                     didInsert(node: newNode, parent: node)
-                    check()
+                    //check()
                     return nil
                 }
             case .orderedDescending:
@@ -67,7 +67,7 @@ public extension BBST {
                     node.right = newNode
                     /// 这里维持平衡的代码交给实体类解决
                     didInsert(node: newNode, parent: node)
-                    check()
+                    //check()
                     return nil
                 }
             }
@@ -87,9 +87,9 @@ public extension BBST {
             switch cmp(element, node.val) {
             case .orderedSame:
                 let origin = node.val
-                defer {
-                    check()
-                }
+//                defer {
+//                    check()
+//                }
                 /// 寻找非叶子节点的实际删除节点位置
                 guard let replaceNode = node.getBSTReplaceNode() else {
                     // 删除的是叶子节点  实际要删除的就是本身

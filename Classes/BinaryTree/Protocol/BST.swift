@@ -64,7 +64,7 @@ public extension BST {
                     /// 插入该节点的左边
                     let newNode = createNode(with: element, parent: node)
                     node.left = newNode
-                    check()
+                    //check()
                     return nil
                 }
             case .orderedDescending:
@@ -75,7 +75,7 @@ public extension BST {
                     let newNode = createNode(with: element, parent: node)
                     node.right = newNode
                     /// 这里维持平衡的代码交给实体类解决
-                    check()
+                    //check()
                     return nil
                 }
             }
@@ -95,9 +95,9 @@ public extension BST {
             switch cmp(element, node.val) {
             case .orderedSame:
                 let origin = node.val
-                defer {
-                    check()
-                }
+//                defer {
+//                    check()
+//                }
                 /// 寻找非叶子节点的实际删除节点位置
                 guard let replaceNode = node.getBSTReplaceNode() else {
                     // 删除的是叶子节点  实际要删除的就是本身
@@ -133,35 +133,35 @@ public extension BST {
     }
 }
 
-extension BST {
-    
-    /// 检验搜索树的合法性
-    @discardableResult
-    public func check() -> Int {
-        guard let node = root else { return 0}
-        var nodes = [node]
-        var count = 0
-        
-        while !nodes.isEmpty {
-            let n = nodes.removeFirst()
-            count += 1
-            if let left = n.left {
-                nodes.append(left)
-                /// 左节点小于父节点
-                assert(cmp(n.val, left.val) == .orderedDescending)
-                assert(isSameObject(left.parent, n))
-            }
-            if let right = n.right {
-                nodes.append(right)
-                /// 右节点大于父节点
-                assert(cmp(n.val, right.val) == .orderedAscending)
-                assert(isSameObject(right.parent, n))
-            }
-
-        }
-        return count
-    }
-}
+//extension BST {
+//
+//    /// 检验搜索树的合法性
+//    @discardableResult
+//    public func check() -> Int {
+//        guard let node = root else { return 0}
+//        var nodes = [node]
+//        var count = 0
+//
+//        while !nodes.isEmpty {
+//            let n = nodes.removeFirst()
+//            count += 1
+//            if let left = n.left {
+//                nodes.append(left)
+//                /// 左节点小于父节点
+//                assert(cmp(n.val, left.val) == .orderedDescending)
+//                assert(isSameObject(left.parent, n))
+//            }
+//            if let right = n.right {
+//                nodes.append(right)
+//                /// 右节点大于父节点
+//                assert(cmp(n.val, right.val) == .orderedAscending)
+//                assert(isSameObject(right.parent, n))
+//            }
+//
+//        }
+//        return count
+//    }
+//}
 
 
 /// 旋转操作

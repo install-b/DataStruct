@@ -20,7 +20,7 @@ class ViewController: UIViewController {
 //        
 //        testSkipList()
         
-        bstAVLTest()
+//        bstAVLTest()
         bstRBTest()
     }
 }
@@ -172,7 +172,7 @@ extension ViewController {
             avl.insert($0)
         }
         //printBST()
-        avl.check()
+        //avl.check()
         assert(avl.count == 20)
         (1...3).forEach {
             avl.remove($0 * 3)
@@ -180,12 +180,12 @@ extension ViewController {
         assert(avl.count == 20 - 3)
         printBST()
         avl.remove(8)
-        assert(avl.check() == 20 - 3 - 1)
+        //assert(avl.check() == 20 - 3 - 1)
         avl.remove(1)
         avl.remove(5)
         assert(avl.count == 20 - 3  - 1 - 2)
         avl.insert(10)
-        assert(avl.check() == avl.count && avl.count == 20 - 3  - 1 - 2)
+        //assert(avl.check() == avl.count && avl.count == 20 - 3  - 1 - 2)
         
         print("\n----------------------------------\n")
          printBST()
@@ -218,24 +218,89 @@ extension ViewController {
 //        (1...10).forEach {
 //            rb.insert($0)
 //        }
+        
+        var intArr = [Int]()
+        
+        for _ in 0..<10_000_000 {
+            let number = Int.random(in: 0..<1000000000)
+            intArr.append(number)
+            
+        }
+        // 81.1420670747757
+        printTime(prefix: "insert RBTree Time = ") {
+            intArr.forEach {rb.insert($0)}
+        }
+        var avl = AVLTree<Int>()
+        // 248.5733379125595
+        printTime(prefix: "insert AVLTree Time = ") {
+            intArr.forEach {avl.insert($0)}
+        }
+        
+        var skipList = SkipLisk<Int, Int>()
+        // 412.76885199546814
+        printTime(prefix: "insert SkipLisk Time = ") {
+            intArr.forEach { skipList.setValue($0, for: $0) }
+        }
+        
+//        var last = Int.min
+//        rb.inoderTranersal {
+//            assert($0 > last)
+//            last = $0
+//        }
+//        var last1 = Int.min
+//        avl.inoderTranersal {
+//            assert($0 > last1)
+//            last1 = $0
+//        }
+//        var last2 = Int.min
+//        skipList.forEach { (key, _) in
+//            assert(key > last2)
+//            last2 = key
+//        }
+        var values = [Int]()
+        for _ in 0..<1000 {
+            values.append(Int.random(in: 0..<100000000))
+        }
+        // 0.008895039558410645
+        printTime(prefix: "remove RBTree Time = ") {
+            
+            values.forEach{rb.remove($0)}
+        }
+        
+        // 0.007248997688293457
+        printTime(prefix: "remove AVLTree Time = ") {
+            values.forEach{avl.remove($0)}
+        }
+        
+        // 0.023012995719909668
+        printTime(prefix: "remove SkipLisk Time = ") {
+            values.forEach{skipList.removeValue(for: $0)}
+        }
+        
+        //printBST()
         /*
          [14, 80, 55, 59, 29, 19, 75, 56, 47, 52, 47, 84, 37, 73, 23, 12, 49, 81, 96, 90]
          [12, 40, 65, 56, 50, 20, 63, 16, 81, 94, 55, 63, 20, 18, 84, 82, 50, 41, 42, 38]
          [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68, 33, 67]
          */
-        let arr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68]
-
-        arr.forEach {
-            rb.insert($0)
-            
-        }
-        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
-        print("remove ++++++++++++++++++++++++++ remove")
-        let rmArr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65]
-        rmArr.forEach {
-            rb.remove($0)
-        }
-        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+//        let arr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65, 30, 91, 48, 49, 99, 53, 62, 31, 56, 64, 68]
+//
+//        arr.forEach {
+//            rb.insert($0)
+//
+//        }
+//        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
+//        print("remove ++++++++++++++++++++++++++ remove")
+//        let rmArr = [69, 73, 16, 12, 55, 33, 47, 41, 58, 50, 67, 65]
+//        rmArr.forEach {
+//            rb.remove($0)
+//        }
+//        print("\n\n\n-----------------------\n\n\n \(rb.root?.printTreeNode() ?? "nil")")
     }
     
+    func printTime(prefix: String = "", block: () -> Void) {
+        let t = CFAbsoluteTimeGetCurrent()
+        block()
+        print(prefix + "\(CFAbsoluteTimeGetCurrent() - t)")
+    }
 }
