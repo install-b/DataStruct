@@ -10,8 +10,22 @@ import Foundation
 /// 跳表最大层数
 fileprivate let MAX_LEVEL: Int = 16
 
+
+fileprivate class DummyNode<K, V> {
+    /// 索引列表
+    var nexts: [Node<K, V>?]
+    /// 下一个节点
+    var next: Node<K, V>? {
+        nexts.first ?? nil
+    }
+    
+    init(nexts: [Node<K, V>?]) {
+        self.nexts = nexts
+    }
+}
+
 /// 跳表节点
-fileprivate final class Node<K, V>: CustomDebugStringConvertible {
+fileprivate final class Node<K, V>: DummyNode<K, V>, CustomDebugStringConvertible {
 
     /// 元素关联的KEY
     var key: K
@@ -19,19 +33,12 @@ fileprivate final class Node<K, V>: CustomDebugStringConvertible {
     /// data
     var val: V
     
-    /// 索引列表
-    var nexts: [Node<K, V>?]
-    
-    /// 下一个节点
-    var next: Node<K, V>? {
-        nexts.first ?? nil
-    }
-    
     /// 构造方法
     init(key: K, val: V, level: Int) {
         self.key = key
         self.val = val
-        self.nexts = Array(repeating: nil, count: level)
+        //self.nexts = Array(repeating: nil, count: level)
+        super.init(nexts: Array(repeating: nil, count: level))
     }
     
     ///自定义打印
@@ -40,11 +47,11 @@ fileprivate final class Node<K, V>: CustomDebugStringConvertible {
     }
 }
 
+
 /// 跳表
 public struct SkipLisk<K, V> {
     /// 虚拟头结点
-    private var dummyHead: [Node<K, V>?] = Array(repeating: nil, count: MAX_LEVEL)
-    
+    private var dummyNode: DummyNode<K, V> = DummyNode(nexts: Array(repeating: nil, count: MAX_LEVEL))
     /// 节点个数
     public private(set) var count: Int = 0
     /// 是否为空
@@ -58,7 +65,6 @@ public struct SkipLisk<K, V> {
     /// 比较器
     private let compare: (K, K) -> ComparisonResult
     
-    
     /// 构造方法
     /// - Parameter compare: 比较器
     public init(compare: @escaping (K, K) -> ComparisonResult) {
@@ -68,7 +74,7 @@ public struct SkipLisk<K, V> {
     /// 自定义打印
     public var debugDescription: String {
         var str = "<head(count: \(count), level: \(level)>"
-        var node = dummyHead.first ?? nil
+        var node = dummyNode.nexts.first ?? nil
         
         while node != nil {
             str += "\n" + node!.debugDescription
@@ -97,10 +103,10 @@ public extension SkipLisk {
     func valueFor(_ key: K) -> V? {
         
         guard level > 0 else { return nil }
-        var nexts = dummyHead
+        var varNode = dummyNode
         var l = level - 1
         while l >= 0 {
-            guard let node = nexts[l] else {
+            guard let node = varNode.nexts[l] else {
                 l -= 1
                 continue
             }
@@ -108,7 +114,7 @@ public extension SkipLisk {
             case .orderedSame:
                 return node.val
             case .orderedDescending:
-                nexts = node.nexts
+                varNode = node
             default:
                 l -= 1
             }
@@ -127,23 +133,20 @@ public extension SkipLisk {
             let currentLevel = randomLevel()
             let newNode = Node(key: key, val: val, level: currentLevel)
             for i in 0..<currentLevel {
-                dummyHead[i] = newNode
+                dummyNode.nexts[i] = newNode
             }
             level = currentLevel
             count = 1
             return nil
         }
-        var nexts = dummyHead
-        var prevsNexts: [Node<K, V>] = []
-        var l = level - 1
-        var lastNode: Node<K, V>?
+        var varNode = dummyNode
         
+        var prevsNexts: [DummyNode<K, V>?] = Array(repeating: nil, count: MAX_LEVEL)
+        var l = level - 1
         while l >= 0 {
-            guard let node = nexts[l] else {
+            guard let node = varNode.nexts[l] else {
+                prevsNexts[l] = varNode
                 l -= 1
-                if let node = lastNode {
-                    prevsNexts.isEmpty ? prevsNexts.append(node) : prevsNexts.insert(node, at: 0)
-                }
                 continue
             }
             switch compare(key, node.key) {
@@ -153,14 +156,11 @@ public extension SkipLisk {
                 return orgin
             case .orderedDescending:
                 // key > node.key 穿过该节点进入下个节点
-                nexts = node.nexts
-                lastNode = node
+                varNode = node
             default:
                 /// key < node.key 回调j降低索引
+                prevsNexts[l] = varNode
                 l -= 1
-                if let node = lastNode {
-                    prevsNexts.isEmpty ? prevsNexts.append(node) : prevsNexts.insert(node, at: 0)
-                }
             }
         }
         
@@ -168,16 +168,16 @@ public extension SkipLisk {
         let newNode = Node(key: key, val: val, level: currentLevel)
         
         for i in 0..<currentLevel {
-            if i < prevsNexts.count {
+            if let node = prevsNexts[i] {
                 /// 连接下一个线
-                newNode.nexts[i] = prevsNexts[i].nexts[i]
+                newNode.nexts[i] = node.nexts[i]
                 /// 连接上一个线
-                prevsNexts[i].nexts[i] = newNode
+                node.nexts[i] = newNode
             } else {
                 /// 连接下一个线
-                newNode.nexts[i] = dummyHead[i]
+                newNode.nexts[i] = dummyNode.nexts[i]
                 /// 连接上一个线
-                dummyHead[i] = newNode
+                dummyNode.nexts[i] = newNode
             }
         }
         count += 1
@@ -194,48 +194,41 @@ public extension SkipLisk {
             /// 没有元素存在
             return nil
         }
-        var nexts = dummyHead
-        var prevsNexts: [Node<K, V>] = []
-        var l = level - 1
-        var lastNode: Node<K, V>?
         
+        var prevsNexts: [DummyNode<K, V>?] = Array(repeating: nil, count: MAX_LEVEL)
+        var l = level - 1
+        var varNode = dummyNode
         while l >= 0 {
-            guard let node = nexts[l] else {
+            guard let node = varNode.nexts[l] else {
                 l -= 1
-                if let node = lastNode {
-                    prevsNexts.isEmpty ? prevsNexts.append(node) : prevsNexts.insert(node, at: 0)
-                }
                 continue
             }
             switch compare(key, node.key) {
             case .orderedDescending:
                 // key > node.key 穿过该节点进入下个节点
-                nexts = node.nexts
-                lastNode = node
+                varNode = node
             default:
                 /// key < node.key 回调j降低索引
+                prevsNexts[l] = varNode
                 l -= 1
-                if let node = lastNode {
-                    prevsNexts.isEmpty ? prevsNexts.append(node) : prevsNexts.insert(node, at: 0)
-                }
             }
         }
         /// 找到前驱 并且当前Key值一致
-        guard let node = lastNode?.next, compare(key, node.key) == .orderedSame else { return nil }
+        guard let node = prevsNexts[0]?.next, compare(key, node.key) == .orderedSame else { return nil }
         
         let orgin = node.val
         //这里进行删除
         let currentLevel = node.nexts.count
         for index in 0..<currentLevel {
-            if !prevsNexts.isEmpty, 0..<prevsNexts.count ~= index {
-                prevsNexts[index].nexts[index] = node.nexts[index]
+            if let preNode = prevsNexts[index] {
+                preNode.nexts[index] = node.nexts[index]
             } else {
-                dummyHead[index] = node.nexts[index]
+                dummyNode.nexts[index] = node.nexts[index]
             }
             
         }
         count -= 1
-        //assert(count == realCount())
+        
         /// 更新层数
         if currentLevel == level {
             updateLevel(currentLevel)
@@ -253,7 +246,7 @@ public extension SkipLisk {
     /// - Returns: 转化结果
     func map<T>(_ transform: (_ key: K, _ value: V) throws -> T) rethrows -> [T] {
         var results = [T]()
-        var node = dummyHead[0]
+        var node = dummyNode.next
         while node != nil {
             results.append(try transform(node!.key, node!.val))
             node = node?.next
@@ -268,7 +261,7 @@ public extension SkipLisk {
     /// - Returns: 转化结果
     func compactMap<ElementOfResult>(_ transform: (_ key: K, _ value: V) throws -> ElementOfResult?) rethrows -> [ElementOfResult] {
         var results = [ElementOfResult]()
-        var node = dummyHead[0]
+        var node = dummyNode.next
         while node != nil {
             if let e = try transform(node!.key, node!.val) {
                 results.append(e)
@@ -283,7 +276,7 @@ public extension SkipLisk {
     /// 遍历操作
     /// - Parameter body: 遍历Block
     func forEach(_ body: (_ key: K, _ value: V) throws -> Void) rethrows {
-        var node = dummyHead[0]
+        var node = dummyNode.next
         while node != nil {
             try body(node!.key, node!.val)
             node = node?.next
@@ -297,7 +290,7 @@ private extension SkipLisk {
     /// 随机层
     func randomLevel() -> Int {
         var level = 1
-        while Int.random(in: 0...1) == 0, level < MAX_LEVEL {
+        while Int.random(in: 0...4) == 0, level < MAX_LEVEL {
             level += 1
         }
         return level
@@ -309,7 +302,7 @@ private extension SkipLisk {
             level = 0
             return
         }
-        for i in 1..<MAX_LEVEL where dummyHead[i] == nil {
+        for i in 1..<MAX_LEVEL where dummyNode.nexts[i] == nil {
             level = i
             return
         }

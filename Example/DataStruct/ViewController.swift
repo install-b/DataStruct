@@ -107,12 +107,12 @@ extension ViewController {
                 print("set value: \n\(value) \n did replace origin: \n\(orgin)\n")
             }
         }
-        
+        assert(set.count == skipList.count)
         for r in  [63, 41, 41, 22, 31, 74, 60, 100, 300] {
             set.remove(r)
             skipList.removeValue(for: r)
         }
-        
+        assert(set.count == skipList.count)
         print(skipList.debugDescription)
         
         print("\n\n")
@@ -230,11 +230,11 @@ extension ViewController {
         printTime(prefix: "insert RBTree Time = ") {
             intArr.forEach {rb.insert($0)}
         }
-        var avl = AVLTree<Int>()
-        // 248.5733379125595
-        printTime(prefix: "insert AVLTree Time = ") {
-            intArr.forEach {avl.insert($0)}
-        }
+//        var avl = AVLTree<Int>()
+//        // 248.5733379125595
+//        printTime(prefix: "insert AVLTree Time = ") {
+//            intArr.forEach {avl.insert($0)}
+//        }
         
         var skipList = SkipLisk<Int, Int>()
         // 412.76885199546814
@@ -242,21 +242,7 @@ extension ViewController {
             intArr.forEach { skipList.setValue($0, for: $0) }
         }
         
-//        var last = Int.min
-//        rb.inoderTranersal {
-//            assert($0 > last)
-//            last = $0
-//        }
-//        var last1 = Int.min
-//        avl.inoderTranersal {
-//            assert($0 > last1)
-//            last1 = $0
-//        }
-//        var last2 = Int.min
-//        skipList.forEach { (key, _) in
-//            assert(key > last2)
-//            last2 = key
-//        }
+
         var values = [Int]()
         for _ in 0..<1000 {
             values.append(Int.random(in: 0..<100000000))
@@ -267,16 +253,31 @@ extension ViewController {
             values.forEach{rb.remove($0)}
         }
         
-        // 0.007248997688293457
-        printTime(prefix: "remove AVLTree Time = ") {
-            values.forEach{avl.remove($0)}
-        }
-        
+//        // 0.007248997688293457
+//        printTime(prefix: "remove AVLTree Time = ") {
+//            values.forEach{avl.remove($0)}
+//        }
+//        
         // 0.023012995719909668
         printTime(prefix: "remove SkipLisk Time = ") {
             values.forEach{skipList.removeValue(for: $0)}
         }
-        
+
+        var last = Int.min
+        rb.inoderTranersal {
+            assert($0 > last)
+            last = $0
+        }
+//                var last1 = Int.min
+//                avl.inoderTranersal {
+//                    assert($0 > last1)
+//                    last1 = $0
+//                }
+        var last2 = Int.min
+        skipList.forEach { (key, _) in
+            assert(key > last2)
+            last2 = key
+        }
         //printBST()
         /*
          [14, 80, 55, 59, 29, 19, 75, 56, 47, 52, 47, 84, 37, 73, 23, 12, 49, 81, 96, 90]
