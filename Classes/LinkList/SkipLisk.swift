@@ -8,10 +8,10 @@
 import Foundation
 
 /// 跳表最大层数
-fileprivate let MAX_LEVEL: Int = 16
+fileprivate let MAX_LEVEL: Int = 32
 
 
-fileprivate class DummyNode<K, V> {
+fileprivate class DummyNode<K, V>: CustomDebugStringConvertible {
     /// 索引列表
     var nexts: [Node<K, V>?]
     /// 下一个节点
@@ -22,10 +22,14 @@ fileprivate class DummyNode<K, V> {
     init(nexts: [Node<K, V>?]) {
         self.nexts = nexts
     }
+    
+    var debugDescription: String {
+        "DummyNode Level:\(nexts.count)"
+    }
 }
 
 /// 跳表节点
-fileprivate final class Node<K, V>: DummyNode<K, V>, CustomDebugStringConvertible {
+fileprivate final class Node<K, V>: DummyNode<K, V> {
 
     /// 元素关联的KEY
     var key: K
@@ -37,21 +41,19 @@ fileprivate final class Node<K, V>: DummyNode<K, V>, CustomDebugStringConvertibl
     init(key: K, val: V, level: Int) {
         self.key = key
         self.val = val
-        //self.nexts = Array(repeating: nil, count: level)
         super.init(nexts: Array(repeating: nil, count: level))
     }
     
     ///自定义打印
-    var debugDescription: String {
-        return "key: \(key) value: \(val), level: \(nexts.count)"
+    override var debugDescription: String {
+        "key: \(key) value: \(val), level: \(nexts.count)"
     }
 }
 
 
 /// 跳表
 public struct SkipLisk<K, V> {
-    /// 虚拟头结点
-    private var dummyNode: DummyNode<K, V> = DummyNode(nexts: Array(repeating: nil, count: MAX_LEVEL))
+
     /// 节点个数
     public private(set) var count: Int = 0
     /// 是否为空
@@ -61,6 +63,8 @@ public struct SkipLisk<K, V> {
     
     /// 层数
     private var level: Int = 0
+    /// 虚拟头结点
+    private var dummyNode: DummyNode<K, V> = DummyNode(nexts: Array(repeating: nil, count: MAX_LEVEL))
     
     /// 比较器
     private let compare: (K, K) -> ComparisonResult
@@ -139,9 +143,12 @@ public extension SkipLisk {
             count = 1
             return nil
         }
-        var varNode = dummyNode
         
-        var prevsNexts: [DummyNode<K, V>?] = Array(repeating: nil, count: MAX_LEVEL)
+        /// 当前遍历的节点
+        var varNode = dummyNode
+        ///记录前驱
+        var prevsNexts: [DummyNode<K, V>?] = Array(repeating: nil, count: level)
+        /// 层级遍历
         var l = level - 1
         while l >= 0 {
             guard let node = varNode.nexts[l] else {
@@ -164,24 +171,31 @@ public extension SkipLisk {
             }
         }
         
+        /// 随机产生一个层数  创建新的节点
         let currentLevel = randomLevel()
         let newNode = Node(key: key, val: val, level: currentLevel)
-        
-        for i in 0..<currentLevel {
-            if let node = prevsNexts[i] {
+        /// 越界判定
+        if currentLevel > level {
+            for i in 0..<level {
                 /// 连接下一个线
-                newNode.nexts[i] = node.nexts[i]
+                newNode.nexts[i] = prevsNexts[i]?.nexts[i]
                 /// 连接上一个线
-                node.nexts[i] = newNode
-            } else {
-                /// 连接下一个线
-                newNode.nexts[i] = dummyNode.nexts[i]
+                prevsNexts[i]?.nexts[i] = newNode
+            }
+            for i in level..<currentLevel {
                 /// 连接上一个线
                 dummyNode.nexts[i] = newNode
             }
+            level = currentLevel
+        } else {
+            for i in 0..<currentLevel {
+                /// 连接下一个线
+                newNode.nexts[i] = prevsNexts[i]?.nexts[i]
+                /// 连接上一个线
+                prevsNexts[i]?.nexts[i] = newNode
+            }
         }
         count += 1
-        level = max(level, currentLevel)
         return nil
     }
 
@@ -229,10 +243,7 @@ public extension SkipLisk {
         }
         count -= 1
         
-        /// 更新层数
-        if currentLevel == level {
-            updateLevel(currentLevel)
-        }
+        updateLevel(currentLevel)
         return orgin
     }
 }
@@ -284,28 +295,50 @@ public extension SkipLisk {
     }
 }
 
+public extension SkipLisk {
+    func printSkipNodes() -> String {
+        var str = ""
+        
+        var node = dummyNode.next
+        while node != nil {
+            let height = String(repeating: "===|", count: node!.nexts.count)
+            str += "\n|\(height)\(node!.nexts.count)>"
+            node = node?.next
+        }
+        
+        return str
+    }
+}
 
+private let randomRange = 0...3
 private extension SkipLisk {
     
     /// 随机层
     func randomLevel() -> Int {
         var level = 1
-        while Int.random(in: 0...4) == 0, level < MAX_LEVEL {
+        while Int.random(in: randomRange) == 1 {
             level += 1
+            if level == MAX_LEVEL { break }
         }
         return level
     }
     
     /// 更新层级
     mutating func updateLevel(_ removedLevel: Int) {
-        if count == 0 {
-            level = 0
-            return
+
+        /// 更新层数
+        if removedLevel == level {
+            if count == 0 {
+                level = 0
+                return
+            }
+            
+            for i in 1..<MAX_LEVEL where dummyNode.nexts[i] == nil {
+                level = i
+                return
+            }
+            level = MAX_LEVEL
         }
-        for i in 1..<MAX_LEVEL where dummyNode.nexts[i] == nil {
-            level = i
-            return
-        }
-        level = MAX_LEVEL
+
     }
 }

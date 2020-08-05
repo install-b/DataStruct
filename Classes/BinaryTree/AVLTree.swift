@@ -125,7 +125,7 @@ extension AVLTree: BBST {
         let factor = grand.factor
         if -1...1 ~= factor {
             if let p = grand.fater {
-                if var node = isSameObject( p.lChild , grand) ? p.rChild : p.lChild, var child = node.lChild ?? node.rChild {
+                if var node = (p.lChild === grand) ? p.rChild : p.lChild, var child = node.lChild ?? node.rChild {
                      addjustUnbaclance(node: &child, parent: &node)
                 }
             }
@@ -151,12 +151,16 @@ extension AVLTree: BBST {
         while true {
 
             guard let grand = parent.fater else { return }
-            let isAddLeft = isSameObject(parent.left, node)
+            let isAddLeft = (parent.left === node)
             let factor = grand.factor
             if -1...1 ~= factor {
                 node = parent
                 parent = grand
+                let h = grand.height
                 grand.updateHight()
+                if grand.height == h {
+                    return
+                }
                 continue
             }
             

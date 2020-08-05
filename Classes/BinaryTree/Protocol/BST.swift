@@ -131,37 +131,59 @@ public extension BST {
             }
         }
     }
+    
+    
+    /// 查找元素
+    /// - Parameter element: 元素
+    /// - Returns: 树里面的原始元素
+    func find(_ element: Element) -> Element? {
+        guard var node = root else {
+            return nil
+        }
+        while true {
+            switch cmp(element, node.val) {
+            case .orderedSame:
+                return node.val
+            case .orderedAscending:
+                guard let next = node.left else { return nil }
+                 node = next
+            case .orderedDescending:
+                guard let next = node.right else { return nil }
+                node = next
+            }
+        }
+    }
 }
 
-//extension BST {
-//
-//    /// 检验搜索树的合法性
-//    @discardableResult
-//    public func check() -> Int {
-//        guard let node = root else { return 0}
-//        var nodes = [node]
-//        var count = 0
-//
-//        while !nodes.isEmpty {
-//            let n = nodes.removeFirst()
-//            count += 1
-//            if let left = n.left {
-//                nodes.append(left)
-//                /// 左节点小于父节点
-//                assert(cmp(n.val, left.val) == .orderedDescending)
-//                assert(isSameObject(left.parent, n))
-//            }
-//            if let right = n.right {
-//                nodes.append(right)
-//                /// 右节点大于父节点
-//                assert(cmp(n.val, right.val) == .orderedAscending)
-//                assert(isSameObject(right.parent, n))
-//            }
-//
-//        }
-//        return count
-//    }
-//}
+extension BST {
+
+    /// 检验搜索树的合法性
+    @discardableResult
+    public func check() -> Int {
+        guard let node = root else { return 0}
+        var nodes = [node]
+        var count = 0
+
+        while !nodes.isEmpty {
+            let n = nodes.removeFirst()
+            count += 1
+            if let left = n.left {
+                nodes.append(left)
+                /// 左节点小于父节点
+                assert(cmp(n.val, left.val) == .orderedDescending)
+                assert((left.parent === n))
+            }
+            if let right = n.right {
+                nodes.append(right)
+                /// 右节点大于父节点
+                assert(cmp(n.val, right.val) == .orderedAscending)
+                assert((right.parent === n))
+            }
+
+        }
+        return count
+    }
+}
 
 
 /// 旋转操作
@@ -169,7 +191,7 @@ extension BST {
     /// 即将旋转
     private mutating func prepareMakeRotate(_ node: BTNode<Element>, child: BTNode<Element>) {
         if let parent = node.parent {
-            if isSameObject(parent.left, node) {
+            if (parent.left === node) {
                 parent.left = child
             } else {
                 parent.right = child

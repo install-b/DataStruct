@@ -53,10 +53,10 @@ final class RBNode<E>: BTNode<E> {
     
     /// 堂兄弟
     var brother: (node: RBNode<E>, isLeft: Bool)? {
-        if let node = parent?.right as? RBNode<E>, !isSameObject(node, self) {
+        if let node = parent?.right as? RBNode<E>, !(node === self) {
             return (node: node, isLeft: false)
         }
-        if let node = parent?.left as? RBNode<E>, !isSameObject(node, self) {
+        if let node = parent?.left as? RBNode<E>, !(node === self) {
             return (node: node, isLeft: true)
         }
         return nil
@@ -337,8 +337,8 @@ extension RBTree: BBST {
             return
         }
         
-        let isPleft = isSameObject(grand.left, parent)
-        let isLeft = isSameObject(parent.left, node)
+        let isPleft = (grand.left === parent)
+        let isLeft = (parent.left === node)
         var upNode = parent
         
         if isLeft {

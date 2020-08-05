@@ -116,7 +116,7 @@ extension BTNode {
                 while node.left != nil {
                     node = node.left!
                 }
-                return (node: node, isLeft: !isSameObject(right, node))
+                return (node: node, isLeft: !(right === node))
             }
             return nil
         }
@@ -133,7 +133,7 @@ extension BTNode {
     @discardableResult
     func removeFromParent() -> BTNode<E>? {
         guard let parent = parent else { return nil }
-        if isSameObject(parent.left, self) {
+        if parent.left === self {
             parent.left = nil
         } else {
             parent.right = nil

@@ -81,7 +81,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
     public mutating func append<S>(contentsOf newElements: S) where S : Sequence, Self.Element == S.Element {
         let nodes = newElements.map { Node(val: $0) }
         var pre: Node<T>?
-        let v = nodes[0]
+        //let v = nodes[0]
         nodes.forEach {
             pre?.next = $0
             $0.prev = pre
@@ -174,7 +174,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
                 let current = Node(val: element, prev: node, next: next)
                 node.next = current
                 next?.prev = current
-                if isSameObject(footer, node) {
+                if (footer === node) {
                     footer = current
                 }
                 count += 1
@@ -262,7 +262,7 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
             }
             removed.prev?.next = removed.next
             removed.next?.prev = removed.prev
-            if isSameObject(footer, removed) {
+            if (footer === removed) {
                 footer = removed.prev
             }
             count -= 1
@@ -311,10 +311,10 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
                 node.prev?.next = node.next
                 node.next?.prev = node.prev
                 count -= 1
-                if isSameObject(header, node) {
+                if (header === node) {
                      header = node.next
                 }
-                if isSameObject(footer, node) {
+                if (footer === node) {
                      footer = node.prev
                 }
                 return removeVal
