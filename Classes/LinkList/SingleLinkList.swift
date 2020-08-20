@@ -363,3 +363,17 @@ public extension SingleLinkList {
         try header?.forEach(body)
     }
 }
+
+// MARK: -  GeneratorType
+extension SingleLinkList: IteratorProtocol {
+    public mutating func next() -> Element? { removeFirst() }
+}
+
+
+// MARK: - SequenceType
+extension SingleLinkList: Sequence {
+    
+    public typealias Iterator = SingleLinkList
+    
+    public func makeIterator() -> Iterator { self }
+}

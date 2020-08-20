@@ -477,3 +477,17 @@ public extension DoublyLinkList {
         try header?.forEach(body)
     }
 }
+
+// MARK: -  GeneratorType
+extension DoublyLinkList: IteratorProtocol {
+    public mutating func next() -> Element? { removeFirst() }
+}
+
+
+// MARK: - SequenceType
+extension DoublyLinkList: Sequence {
+    
+    public typealias Iterator = DoublyLinkList
+    
+    public func makeIterator() -> Iterator { self }
+}

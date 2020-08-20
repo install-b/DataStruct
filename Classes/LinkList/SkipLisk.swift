@@ -246,6 +246,17 @@ public extension SkipLisk {
         updateLevel(currentLevel)
         return orgin
     }
+    
+    @discardableResult
+    mutating func removeFirst() -> (key: K, value: V)? {        
+        guard let node = dummyNode.next else { return nil }
+        for i in 0..<node.nexts.count {
+            dummyNode.nexts[i] = node.nexts[i]
+        }
+        count -= 1
+        updateLevel(node.nexts.count)
+        return (key: node.key, value: node.val)
+    }
 }
 
 
@@ -341,4 +352,19 @@ private extension SkipLisk {
         }
 
     }
+}
+
+// MARK: -  GeneratorType
+extension SkipLisk: IteratorProtocol {
+    public typealias Element = (key: K, value: V)
+    public mutating func next() -> Element? { removeFirst() }
+}
+
+
+// MARK: - SequenceType
+extension SkipLisk: Sequence {
+    
+    public typealias Iterator = SkipLisk
+    
+    public func makeIterator() -> Iterator { self }
 }
