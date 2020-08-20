@@ -190,7 +190,7 @@ extension RBTree: BBST {
          /// 兄弟节点是红节点情况
         func makeRotate(red brother: RBNode<E>, isLeft: Bool) {
             if isLeft {
-                if let child = brother.lChild {
+                if  brother.lChild != nil {
                     // LL型
                     makeRightRotate(parent, lChild: brother)
                     /// 父节点染红 兄弟节点染黑
@@ -217,7 +217,7 @@ extension RBTree: BBST {
                    fatalError("父节点是黑节点 子节点有一个黑节点情况下 必然有另一个节点")
                 }
             } else {
-                if let child = brother.rChild {
+                if brother.rChild != nil {
                     makeLeftRotate(parent, rChild: brother)
                     /// 父节点染红 兄弟节点染黑
                     brother.render(color: black)

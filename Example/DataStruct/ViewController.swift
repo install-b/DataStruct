@@ -365,6 +365,8 @@ extension ViewController {
             }
         }
         
+        assert(queue.count == array.count)
+        assert(queue.first == array.first)
         
         printTime(prefix: "remove Array Time = ") {
             while !array.isEmpty {
