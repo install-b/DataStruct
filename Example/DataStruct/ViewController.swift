@@ -21,7 +21,8 @@ class ViewController: UIViewController {
 //        testSkipList()
         
 //        bstAVLTest()
-        bstRBTest()
+//        bstRBTest()
+        queueTest()
     }
 }
 
@@ -335,5 +336,44 @@ extension ViewController {
         let t = CFAbsoluteTimeGetCurrent()
         block()
         print(prefix + "\(CFAbsoluteTimeGetCurrent() - t)")
+    }
+}
+
+extension ViewController {
+    func queueTest() {
+        
+        var data = [Int]()
+        
+        for _ in 1...1_000_000 {
+            data.append(Int.random(in: 0..<1000000000))
+        }
+        
+        var array = [Int]()
+        var queue = PriorityQueue<Int>()
+       
+        printTime(prefix: "add Array Time = ") {
+            data.forEach {
+                array.append($0)
+            }
+            array.sort()
+        }
+        
+        
+        printTime(prefix: "add PriorityQueue Time = ") {
+            data.forEach {
+                queue.push($0)
+            }
+        }
+        
+        
+        printTime(prefix: "remove Array Time = ") {
+            while !array.isEmpty {
+                array.remove(at: 0)
+            }
+        }
+        printTime(prefix: "remove PriorityQueue Time = ") {
+            while queue.pop() != nil {}
+        }
+        
     }
 }
