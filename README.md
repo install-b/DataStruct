@@ -37,7 +37,7 @@ pod 'DataStruct'
 
 ## Author
 
-645256685@qq.com, 645256685@qq.com
+645256685@qq.com, Install-b
 
 ## License
 
