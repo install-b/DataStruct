@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'DataStruct'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of DataStruct.'
+  s.summary          = 'Extend some classic data strures with Swift'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+    Swift Implementation for Classic Data Strucutures.
                        DESC
 
   s.homepage         = 'https://github.com/install-b/DataStruct'
@@ -28,10 +28,24 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/install-b/DataStruct.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
-
-  s.source_files = 'Classes/**/*.swift'
+  s.ios.deployment_target = '9.0'
+  s.osx.deployment_target = '10.10'
+  s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
   
+  s.swift_version = "4.2", "5.0", "5.1"
+#  s.source_files = 'Classes/**/*.swift'
+  s.subspec 'LinkList' do |ss|
+      ss.source_files = 'Classes/LinkList/**/*.swift'
+  end
+  
+  s.subspec 'BinaryTree' do |ss|
+      ss.source_files = 'Classes/BinaryTree/**/*.swift'
+  end
+  
+  s.subspec 'Queue' do |ss|
+      ss.source_files = 'Classes/Queue/**/*.swift'
+  end
   # s.resource_bundles = {
   #   'DataStruct' => ['DataStruct/Assets/*.png']
   # }
