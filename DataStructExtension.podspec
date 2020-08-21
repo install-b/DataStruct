@@ -46,6 +46,9 @@ Pod::Spec.new do |s|
   s.subspec 'Queue' do |ss|
       ss.source_files = 'Classes/Queue/**/*.swift'
   end
+  s.subspec 'Hash' do |ss|
+      ss.source_files = 'Classes/Hash/**/*.swift'
+  end
   # s.resource_bundles = {
   #   'DataStruct' => ['DataStruct/Assets/*.png']
   # }
