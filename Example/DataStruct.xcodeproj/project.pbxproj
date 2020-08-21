@@ -16,7 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		111629250BED17691167560D /* DataStruct.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = DataStruct.podspec; path = ../DataStruct.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		111629250BED17691167560D /* DataStructExtension.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = DataStructExtension.podspec; path = ../DataStructExtension.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		3460E280C362099F4D9F0320 /* Pods-DataStruct_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DataStruct_Example.release.xcconfig"; path = "Target Support Files/Pods-DataStruct_Example/Pods-DataStruct_Example.release.xcconfig"; sourceTree = "<group>"; };
 		40EA9D2A284BBA61EC33DC3C /* Pods-DataStruct_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DataStruct_Tests.release.xcconfig"; path = "Target Support Files/Pods-DataStruct_Tests/Pods-DataStruct_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		4171A28626FA7A04B595B039 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -90,7 +90,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				111629250BED17691167560D /* DataStruct.podspec */,
+				111629250BED17691167560D /* DataStructExtension.podspec */,
 				C675E660042D4B58ABCA20F4 /* README.md */,
 				4171A28626FA7A04B595B039 /* LICENSE */,
 			);
@@ -217,11 +217,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DataStruct_Example/Pods-DataStruct_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/DataStruct/DataStruct.framework",
+				"${BUILT_PRODUCTS_DIR}/DataStructExtension/DataStructExtension.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DataStruct.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DataStructExtension.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

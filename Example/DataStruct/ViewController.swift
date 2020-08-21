@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import DataStruct
+import DataStructExtension
 
 class ViewController: UIViewController {
 
