@@ -43,8 +43,9 @@ Pod::Spec.new do |s|
   end
   
   s.subspec 'LinkList' do |ss|
-      ss.source_files = 'Classes/LinkList/**/*.swift'
-#      ss.dependency = 'DataStructExtension/Queue'
+    ss.dependency 'DataStructExtension/Queue'
+    ss.dependency 'DataStructExtension/Stack'
+    ss.source_files = 'Classes/LinkList/**/*.swift'
   end
   
   s.subspec 'BinaryTree' do |ss|
