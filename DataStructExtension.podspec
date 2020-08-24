@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DataStructExtension'
-  s.version          = '0.1.0'
+  s.version          = '0.2.0'
   s.summary          = 'Extend some classic data strures with Swift'
 
 # This description is used to generate tags and improve search results.
