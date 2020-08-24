@@ -36,7 +36,6 @@ extension DoublyLinkList {
 
 /// 双向链表
 public struct DoublyLinkList<T: Equatable>: LinkList {
-
     
     public typealias Element = T
         
@@ -304,25 +303,27 @@ public struct DoublyLinkList<T: Equatable>: LinkList {
     /// O(n)
     @discardableResult
     public mutating func remove(_ element: T) -> T? {
-        guard var node = header else { return nil }
-        while true {
+        var val = header
+        while let node = val {
             if node.val == element {
                 let removeVal = node.val
-                node.prev?.next = node.next
-                node.next?.prev = node.prev
-                count -= 1
-                if (header === node) {
-                     header = node.next
-                }
-                if (footer === node) {
-                     footer = node.prev
-                }
+                remove(node)
                 return removeVal
             }
-            if node.next == nil {
-                return nil
-            }
-            node = node.next!
+            val = node.next
+        }
+        return nil
+    }
+    
+    private mutating func remove(_ node: Node<T>) {
+        node.prev?.next = node.next
+        node.next?.prev = node.prev
+        count -= 1
+        if (header === node) {
+             header = node.next
+        }
+        if (footer === node) {
+             footer = node.prev
         }
     }
     
@@ -490,4 +491,62 @@ extension DoublyLinkList: Sequence {
     public typealias Iterator = DoublyLinkList
     
     public func makeIterator() -> Iterator { self }
+}
+
+// MARK: - Queue
+extension DoublyLinkList: Queue {
+    
+    public func peek() -> T? {
+        first
+    }
+    
+    public mutating func push(_ element: T) {
+        append(element)
+    }
+    
+    public mutating func pop() -> T? {
+        removeFirst()
+    }
+    
+    public mutating func removeFromFront(_ item: T) -> T? {
+        var val = header
+        while let node = val {
+            if node.val == item {
+                let removeVal = node.val
+                remove(node)
+                return removeVal
+            }
+            val = node.next
+        }
+        return nil
+    }
+    
+    public mutating func removeFromTail(_ item: T) -> T? {
+        var val = footer
+        while let node = val {
+            if node.val == item {
+                let removeVal = node.val
+                remove(node)
+                return removeVal
+            }
+            val = node.prev
+        }
+        return nil
+    }
+    public mutating func removeAll(_ item: T) -> [T]? {
+        var val = header
+        var result = [T]()
+        while let node = val {
+            if node.val == item {
+                remove(node)
+                result.append(node.val)
+            }
+            val = node.next
+        }
+        return result.isEmpty ? nil : result
+    }
+    
+    public mutating func clear() {
+        removeAll()
+    }
 }

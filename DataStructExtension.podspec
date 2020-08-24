@@ -35,17 +35,23 @@ Pod::Spec.new do |s|
   
   s.swift_version = "4.2", "5.0", "5.1"
 #  s.source_files = 'Classes/**/*.swift'
+  s.subspec 'Queue' do |ss|
+      ss.source_files = 'Classes/Queue/**/*.swift'
+  end
+  s.subspec 'Stack' do |ss|
+      ss.source_files = 'Classes/Stack/**/*.swift'
+  end
+  
   s.subspec 'LinkList' do |ss|
       ss.source_files = 'Classes/LinkList/**/*.swift'
+#      ss.dependency = 'DataStructExtension/Queue'
   end
   
   s.subspec 'BinaryTree' do |ss|
       ss.source_files = 'Classes/BinaryTree/**/*.swift'
   end
   
-  s.subspec 'Queue' do |ss|
-      ss.source_files = 'Classes/Queue/**/*.swift'
-  end
+
   s.subspec 'Hash' do |ss|
       ss.source_files = 'Classes/Hash/**/*.swift'
   end

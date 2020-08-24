@@ -24,10 +24,15 @@ public protocol Queue {
     /// 移除堆顶元素
     mutating func pop() -> QE?
     
-    /// 移除一个元素
+    /// 移除一个元素 从队头开始匹配
     /// - Parameter item: 需要移除的元素
     /// - Returns: 返回队列中保存的元素 如果不存在则返回nil
-    mutating func remove(_ item: QE) -> QE?
+    mutating func removeFromFront(_ item: QE) -> QE?
+    
+    /// 移除一个元素 从队尾开始匹配
+    /// - Parameter item: 需要移除的元素
+    /// - Returns: 返回队列中保存的元素 如果不存在则返回nil
+    mutating func removeFromTail(_ item: QE) -> QE?
     
     /// 移除所有的该元素
     /// - Parameter item: 需要移除的元素

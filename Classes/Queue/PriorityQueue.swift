@@ -107,26 +107,41 @@ extension PriorityQueue: Queue {
     /// Silently exits if no occurrence found.
     ///
     /// - parameter item: The item to remove the first occurrence of.
-    public mutating func remove(_ item: E) -> E? {
+    public mutating func removeFromFront(_ item: E) -> E? {
         
-        func firstIndex() -> Index? {
-            if !heap.isEmpty {
-                for i in 0..<heap.count where cmp(heap[i], item) == .orderedSame {
-                    return i
-                }
-            }
-            return nil
-        }
-        
-        if let index = firstIndex() {
-            heap.swapAt(index, heap.count - 1)
-            heap.removeLast()
-            if index < heap.count { // if we removed the last item, nothing to swim
-                swim(index)
-                sink(index)
+        if !heap.isEmpty {
+            for i in 0..<heap.count where cmp(heap[i], item) == .orderedSame {
+                return remove(at: i)
             }
         }
         return nil
+    }
+    
+    /// Removes the last occurence of a particular item. Finds it by value comparison using ==. O(n)
+    /// Silently exits if no occurrence found.
+    ///
+    /// - parameter item: The item to remove the first occurrence of.
+    public mutating func removeFromTail(_ item: E) -> E? {
+        if !heap.isEmpty {
+            for i in stride(from: heap.count - 1, through: 0, by: -1) where cmp(heap[i], item) == .orderedSame {
+                return remove(at: i)
+            }
+        }
+        return nil
+    }
+    
+    /// 删除某个索引
+    /// - Parameter index: 索引值
+    /// - Returns: 索引对应的值
+    private mutating func remove(at index: Index) -> E {
+        let result = heap[index]
+        heap.swapAt(index, heap.count - 1)
+        heap.removeLast()
+        if index < heap.count { // if we removed the last item, nothing to swim
+            swim(index)
+            sink(index)
+        }
+        return result
     }
     
     /// Removes all occurences of a particular item. Finds it by value comparison using ==. O(n)
@@ -135,7 +150,7 @@ extension PriorityQueue: Queue {
     /// - parameter item: The item to remove.
     public mutating func removeAll(_ item: E) -> [E]? {
         var items = [E]()
-        while let e = remove(item) {
+        while let e = removeFromFront(item) {
             items.append(e)
         }
         return items.isEmpty ? nil : items

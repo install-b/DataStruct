@@ -16,6 +16,12 @@ open class HashTable<T> {
     /// The delegates hash table.
     private let table: NSHashTable<AnyObject>
     
+    
+    /// count of element
+    public var count: Int {
+         table.allObjects.count
+    }
+    
     /**
      *  Use the property to check if no delegates are contained there.
      *

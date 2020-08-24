@@ -4,10 +4,12 @@ PODS:
     - DataStructExtension/Hash (= 0.1.0)
     - DataStructExtension/LinkList (= 0.1.0)
     - DataStructExtension/Queue (= 0.1.0)
+    - DataStructExtension/Stack (= 0.1.0)
   - DataStructExtension/BinaryTree (0.1.0)
   - DataStructExtension/Hash (0.1.0)
   - DataStructExtension/LinkList (0.1.0)
   - DataStructExtension/Queue (0.1.0)
+  - DataStructExtension/Stack (0.1.0)
 
 DEPENDENCIES:
   - DataStructExtension (from `../`)
@@ -17,7 +19,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  DataStructExtension: 43d71d7f06204ceed15685dcfaf21e5d376785b3
+  DataStructExtension: 8a1935a5789ae75ba3ce822100dae3cb2d256c94
 
 PODFILE CHECKSUM: 5f0893551b2108c79a1c7453de92862e388da21c
 

@@ -377,3 +377,34 @@ extension SingleLinkList: Sequence {
     
     public func makeIterator() -> Iterator { self }
 }
+
+// MARK: - Stack
+extension SingleLinkList: Stack {
+    public var top: T? {
+        first
+    }
+    
+    public mutating func push(_ element: T) {
+        insert(element, at: 0)
+    }
+    
+    public mutating func pop() -> T? {
+        removeFirst()
+    }
+    
+    public mutating func pop(count: Int) -> [T]? {
+        if count <= 0 {
+            return nil
+        }
+        guard self.count >= count else {
+            return nil
+        }
+        
+        var result = [T]()
+        
+        for _ in 0..<count {
+            result.append(removeFirst()!)
+        }
+        return result
+    }
+}
