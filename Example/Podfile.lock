@@ -1,17 +1,22 @@
 PODS:
-  - DataStructExtension (0.1.0):
-    - DataStructExtension/BinaryTree (= 0.1.0)
-    - DataStructExtension/Hash (= 0.1.0)
-    - DataStructExtension/LinkList (= 0.1.0)
-    - DataStructExtension/Queue (= 0.1.0)
-    - DataStructExtension/Stack (= 0.1.0)
-  - DataStructExtension/BinaryTree (0.1.0)
-  - DataStructExtension/Hash (0.1.0)
-  - DataStructExtension/LinkList (0.1.0):
+  - DataStructExtension (0.2.0):
+    - DataStructExtension/BinaryTree (= 0.2.0)
+    - DataStructExtension/BitSet (= 0.2.0)
+    - DataStructExtension/BloomFilter (= 0.2.0)
+    - DataStructExtension/Hash (= 0.2.0)
+    - DataStructExtension/LinkList (= 0.2.0)
+    - DataStructExtension/Queue (= 0.2.0)
+    - DataStructExtension/Stack (= 0.2.0)
+  - DataStructExtension/BinaryTree (0.2.0)
+  - DataStructExtension/BitSet (0.2.0)
+  - DataStructExtension/BloomFilter (0.2.0):
+    - DataStructExtension/BitSet
+  - DataStructExtension/Hash (0.2.0)
+  - DataStructExtension/LinkList (0.2.0):
     - DataStructExtension/Queue
     - DataStructExtension/Stack
-  - DataStructExtension/Queue (0.1.0)
-  - DataStructExtension/Stack (0.1.0)
+  - DataStructExtension/Queue (0.2.0)
+  - DataStructExtension/Stack (0.2.0)
 
 DEPENDENCIES:
   - DataStructExtension (from `../`)
@@ -21,7 +26,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  DataStructExtension: 2a6be6c98cb6ad78d1a8848be873da7437ea5b94
+  DataStructExtension: 5c91d2109966e6ed236adc0142d8357e3b9de0ef
 
 PODFILE CHECKSUM: 5f0893551b2108c79a1c7453de92862e388da21c
 

@@ -7,15 +7,10 @@
 #
 
 Pod::Spec.new do |s|
+  
   s.name             = 'DataStructExtension'
   s.version          = '0.2.0'
   s.summary          = 'Extend some classic data strures with Swift'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
     Swift Implementation for Classic Data Strucutures.
@@ -34,7 +29,8 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '9.0'
   
   s.swift_version = "4.2", "5.0", "5.1"
-#  s.source_files = 'Classes/**/*.swift'
+  
+  
   s.subspec 'Queue' do |ss|
       ss.source_files = 'Classes/Queue/**/*.swift'
   end
@@ -52,15 +48,18 @@ Pod::Spec.new do |s|
       ss.source_files = 'Classes/BinaryTree/**/*.swift'
   end
   
-
+  s.subspec 'BitSet' do |ss|
+    
+      ss.source_files = 'Classes/BitSet/**/*.swift'
+  end
+  
+  s.subspec 'BloomFilter' do |ss|
+      ss.dependency 'DataStructExtension/BitSet'
+      ss.source_files = 'Classes/BloomFilter/**/*.swift'
+  end
+  
   s.subspec 'Hash' do |ss|
       ss.source_files = 'Classes/Hash/**/*.swift'
   end
-  # s.resource_bundles = {
-  #   'DataStruct' => ['DataStruct/Assets/*.png']
-  # }
-
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+  
 end

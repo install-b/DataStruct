@@ -52,7 +52,7 @@ fileprivate final class Node<K, V>: DummyNode<K, V> {
 
 
 /// 跳表
-public struct SkipLisk<K, V> {
+public struct SkipList<K, V> {
 
     /// 节点个数
     public private(set) var count: Int = 0
@@ -88,7 +88,7 @@ public struct SkipLisk<K, V> {
     }
 }
 
-extension SkipLisk where K: Comparable {
+extension SkipList where K: Comparable {
     /// KEY 值具备可比性
     public init() {
         self.compare = { (k1, k2) -> ComparisonResult in
@@ -100,7 +100,7 @@ extension SkipLisk where K: Comparable {
     }
 }
 
-public extension SkipLisk {
+public extension SkipList {
     
     /// 获取数据
     /// - Parameter key: 关联的key
@@ -261,7 +261,7 @@ public extension SkipLisk {
 
 
 
-public extension SkipLisk {
+public extension SkipList {
     
     /// 转为数组
     /// - Parameter transform: 转换block
@@ -306,7 +306,7 @@ public extension SkipLisk {
     }
 }
 
-public extension SkipLisk {
+public extension SkipList {
     func printSkipNodes() -> String {
         var str = ""
         
@@ -322,7 +322,7 @@ public extension SkipLisk {
 }
 
 private let randomRange = 0...3
-private extension SkipLisk {
+private extension SkipList {
     
     /// 随机层
     func randomLevel() -> Int {
@@ -355,16 +355,16 @@ private extension SkipLisk {
 }
 
 // MARK: -  GeneratorType
-extension SkipLisk: IteratorProtocol {
+extension SkipList: IteratorProtocol {
     public typealias Element = (key: K, value: V)
     public mutating func next() -> Element? { removeFirst() }
 }
 
 
 // MARK: - SequenceType
-extension SkipLisk: Sequence {
+extension SkipList: Sequence {
     
-    public typealias Iterator = SkipLisk
+    public typealias Iterator = SkipList
     
     public func makeIterator() -> Iterator { self }
 }

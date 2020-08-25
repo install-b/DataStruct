@@ -10,6 +10,9 @@
 
 ### Swift Implementation for Classic Data Strucutures
 
+* BitSet
+
+* BloomFilter(布隆过滤器)
 
 * Queue (队列)
     * DoublyLinkList(双向链表队列)
@@ -18,6 +21,8 @@
 * Stack(栈)
     * ArrayStack(数组实现栈)
     * SingleLinkList链表实现栈)
+
+* HashTable
 
 * LinkedList (链表)
     * SingleLinkList (单链表)

@@ -22,7 +22,8 @@ class ViewController: UIViewController {
         
 //        bstAVLTest()
 //        bstRBTest()
-        queueTest()
+//        queueTest()
+        bloomFilterTest()
     }
 }
 
@@ -96,7 +97,7 @@ extension ViewController {
 
 extension ViewController {
     func testSkipList() {
-        var skipList = SkipLisk<Int, NSString>()
+        var skipList = SkipList<Int, NSString>()
         var set = Set<Int>()
         let arr = [63, 41, 41, 22, 31, 74, 60, 61, 26, 19, 53, 44, 15, 41, 63, 68, 75, 71, 80, 92, 90, 91, 97]
         
@@ -249,7 +250,7 @@ extension ViewController {
          remove AVLTree Time = 0.004559040069580078
          remove SkipLisk Time = 0.007779955863952637
          */
-        for _ in 0..<10_000_000 {
+        for _ in 0..<1_000_000 {
             let number = Int.random(in: 0..<1000000000)
             intArr.append(number)
             
@@ -264,53 +265,53 @@ extension ViewController {
             intArr.forEach {avl.insert($0)}
         }
         
-        var skipList = SkipLisk<Int, Int>()
+        var skipList = SkipList<Int, Int>()
         // 412.76885199546814
         printTime(prefix: "insert SkipLisk Time = ") {
             intArr.forEach { skipList.setValue($0, for: $0) }
         }
         
-        //print(skipList.printSkipNodes())
-
-        var values = [Int]()
-        for _ in 0..<1000 {
-            values.append(Int.random(in: 0..<100000000))
-        }
-        // 0.008895039558410645
-        printTime(prefix: "remove RBTree Time = ") {
-            
-            values.forEach{_ = rb.find($0)}
-        }
-        
-        // 0.007248997688293457
-        printTime(prefix: "remove AVLTree Time = ") {
-            values.forEach{_ = avl.find($0)}
-        }
-        
-        // 0.023012995719909668
-        printTime(prefix: "remove SkipLisk Time = ") {
-            values.forEach{_ = skipList.valueFor($0)}
-        }
-
-        var last = Int.min
-        rb.inoderTranersal {
-            assert($0 > last)
-            last = $0
-        }
-        
-        var last1 = Int.min
-        avl.inoderTranersal {
-            assert($0 > last1)
-            last1 = $0
-        }
-        
-        var last2 = Int.min
-        skipList.forEach { (key, _) in
-            assert(key > last2)
-            last2 = key
-        }
-        
-        avl.check()
+//        //print(skipList.printSkipNodes())
+//
+//        var values = [Int]()
+//        for _ in 0..<1000 {
+//            values.append(Int.random(in: 0..<100000000))
+//        }
+//        // 0.008895039558410645
+//        printTime(prefix: "remove RBTree Time = ") {
+//            
+//            values.forEach{_ = rb.find($0)}
+//        }
+//        
+//        // 0.007248997688293457
+//        printTime(prefix: "remove AVLTree Time = ") {
+//            values.forEach{_ = avl.find($0)}
+//        }
+//        
+//        // 0.023012995719909668
+//        printTime(prefix: "remove SkipLisk Time = ") {
+//            values.forEach{_ = skipList.valueFor($0)}
+//        }
+//
+//        var last = Int.min
+//        rb.inoderTranersal {
+//            assert($0 > last)
+//            last = $0
+//        }
+//        
+//        var last1 = Int.min
+//        avl.inoderTranersal {
+//            assert($0 > last1)
+//            last1 = $0
+//        }
+//        
+//        var last2 = Int.min
+//        skipList.forEach { (key, _) in
+//            assert(key > last2)
+//            last2 = key
+//        }
+//        
+//        avl.check()
         //printBST()
         /*
          [14, 80, 55, 59, 29, 19, 75, 56, 47, 52, 47, 84, 37, 73, 23, 12, 49, 81, 96, 90]
@@ -377,5 +378,32 @@ extension ViewController {
             while queue.pop() != nil {}
         }
         
+    }
+}
+
+extension ViewController {
+    func bloomFilterTest() {
+        
+        var bf = BFStruct<String>(dataSize: 1_000_000, fp: 0.05)
+        
+        for i in 0..<1_000_000 {
+            bf.insert("www.baidu.com/u/\(100 + i)")
+        }
+        
+        for i in 0..<100 {
+           assert(bf.query("www.baidu.com/u/\(1000 + i * 10)"))
+        }
+
+        var falsePositive = 0
+        
+        for i in 0..<10000 where bf.query("www.baidu.com/u/\(10_000_000 + i)") {
+            falsePositive += 1
+        }
+        
+        for i in 0..<10000 where bf.query("www.sougou.com/s/\(10_000 + i)") {
+            falsePositive += 1
+        }
+        // 误判率
+        print("falsePositive = \(Float(falsePositive) / 20000)")
     }
 }
