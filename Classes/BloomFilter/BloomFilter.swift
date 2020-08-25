@@ -80,25 +80,18 @@ public struct BFStruct<T: Hashable>: BloomFilter {
          m = - ( n * lnε) / (ln2 * ln2)
          */
         
+        /// 计算存储计算规模
         let m = Int(-(Float(dataSize) * log(fp) / (log(2) * log(2))))
         bitSet = BitSet(capacity: m)
+  
+        /// 添加hash函数
+        let k = Int( ceil(-log2(fp)) )
         
-        hashFunctions = []
-        
-        let k = Int( (-log2(fp)) )
-        if k == 0 {
-            func a(_ v: Value) -> Int {
-                v.hashValue
-            }
-            hashFunctions.append(a)
-            return
-        }
-        
-        for i in 0..<k {
+        hashFunctions = (0..<k).map { (i) -> ((_: T) -> Int) in
             func a(_ v: Value) -> Int {
                 (v.hashValue + i * Int.bitWidth).hashValue
             }
-            hashFunctions.append(a)
+            return a
         }
     }
 }
