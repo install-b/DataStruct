@@ -40,9 +40,10 @@ extension BloomFilter {
     /// - Returns: 返回true说明可能已存在(被处理了), 返回false说明一定不存在(未被处理)
     public func query(_ value: Value) -> Bool {
       // Map hashes to indices in the Bloom Filter
-        let results = hashFunctions.map { bitSet[abs($0(value)) % bitSet.count] }
-        let exists = results.reduce(true, { $0 && $1 })
-        return exists
+        for hashfn in hashFunctions where !bitSet[abs(hashfn(value)) % bitSet.count] {
+            return false
+        }
+        return true
     }
     
     // As soon as the reduction hits a 'true' value, the && condition will fail.

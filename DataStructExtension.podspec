@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   
   s.name             = 'DataStructExtension'
-  s.version          = '0.2.0'
+  s.version          = '0.3.0'
   s.summary          = 'Extend some classic data strures with Swift'
 
   s.description      = <<-DESC

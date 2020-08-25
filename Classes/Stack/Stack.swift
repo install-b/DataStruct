@@ -30,7 +30,7 @@ public protocol Stack {
     /// - Parameter count: 元素个数
     mutating func pop(count: Int) -> [Element]?
     
-    /// 情况栈
+    /// 清空栈
     mutating func removeAll()
 }
 
